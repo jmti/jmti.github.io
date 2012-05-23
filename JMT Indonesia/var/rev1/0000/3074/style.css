@@ -1,0 +1,127 @@
+@charset "utf-8";
+/* CSS Document */
+
+
+
+
+body {
+font-family: "ＭＳ Ｐゴシック", "ヒラギノ角ゴ Pro W3", "Hiragino Kaku Gothic Pro", osaka;
+margin: 0px;
+padding: 0px;
+background:url(http://welcome.jmtech.co.jp/img/common/bgbg.jpg) repeat-x;
+}
+
+
+
+body,h1,h2,h3,h4,h5,h6,td,th,div,p,input,textarea,pre,li {
+font-size:small;
+line-height:125%;
+font-weight:normal;
+color:#5e5e5e;
+letter-spacing:0.035em;
+
+/*IE5.5以下に見せたくないときの設定（2行）*/
+voice-family:"\"}\""; /*『 } 』で終わったと見せかける*/
+voice-family:inherit; /*『inherit』で上の設定をキャンセル*/
+
+font-size:small;
+_font-size:small;
+
+}
+p{text-align:justify;text-justify : inter-ideograph;}
+
+a{ text-decoration:none; color:#5e5e5e;}
+a:hover{ text-decoration: underline; color:#5e5e5e;}
+
+h1,h2,h3,h4,h5,h6,p,ul,ol,dl,dt,li,dd,form,pre,embed,object,form,fieldset,input,textarea,select,option,img{margin:0;padding:0;vertical-align: baseline;}
+
+li{ list-style-type:none;}
+
+table,img{border:0;}
+.clear{ clear:both; margin:0; padding:0;}
+
+
+
+
+
+
+a{ text-decoration:none; color:#5e5e5e;}
+a:hover{ text-decoration: underline; color:#5e5e5e;}
+
+h1,h2,h3,h4,h5,h6,p,ul,ol,dl,dt,li,dd,form,pre,embed,object,form,fieldset,input,textarea,select,option,img{margin:0;padding:0;vertical-align: baseline;}
+
+li{list-style-type:none;}
+
+table,img{border:0;}
+.clear{ clear:both; margin:0; padding:0;}
+p{text-align:justify;text-justify : inter-ideograph; font-size:12px; color:#5e5e5e; padding:0 5px;}
+
+
+h3{ background:url(http://welcome.jmtech.co.jp/official/img/product/h1001.gif) no-repeat; width:477px; height:25px; padding:11px 0 0 23px; font-size:14px; font-weight:bold; color:#393939; margin:0 0 17px 0;}
+h4{ background:url(http://welcome.jmtech.co.jp/official/img/product/h1003.gif) no-repeat; width:461px; height:14px; padding:2px 0 0 26px; font-size:12px; font-weight:bold; color:#393939; margin:0 0 12px 5px;}
+
+.probox{ width:500px; background:url(http://welcome.jmtech.co.jp/official/img/product/under_line.gif) left bottom no-repeat; padding:0 0 5px 0; margin: 0 0 5px 0;}
+.greenbox{border: 1px solid #c5c9a8; padding:20px;}
+
+.green12_b{ font-size:12px; font-weight: bold; color:#377608;}
+.red12_b{ font-size:12px; font-weight: bold; color:#CC0000;}
+
+.mg_b5{ margin:0 0 5px 0;}
+.mg_b10{ margin:0 0 10px 0;}
+.mg_b20{ margin:0 0 20px 0;}
+.mg_b30{ margin:0 0 30px 0;}
+.mg_b40{ margin:0 0 40px 0;}
+.mg_b50{ margin:0 0 50px 0;}
+.mg_00300030{ margin:0 30px;}
+.mg_00303030{ margin:0 30px 30px 30px;}
+
+
+.totop{ margin:60px 0 0 0;}
+.sumbimg{ float: left; margin: 0 8px 30px 0;}
+
+ul.ul900_pro{}
+ul.ul900_pro li{ width:161px; height:47px; display:block; text-indent:-5000px;}
+ul.ul900_pro li a{ width:161px; height:47px; display:block; overflow:hidden;}
+ul.ul900_pro li.li901{ background:url(http://welcome.jmtech.co.jp/official/img/product/bu_navi001.gif) no-repeat;}
+ul.ul900_pro li.li901 a:hover{ background:url(http://welcome.jmtech.co.jp/official/img/product/bu_navi001ov.gif) no-repeat;}
+ul.ul900_pro li.li902{ background:url(http://welcome.jmtech.co.jp/official/img/product/bu_navi002.gif) no-repeat;}
+ul.ul900_pro li.li902 a:hover{ background:url(http://welcome.jmtech.co.jp/official/img/product/bu_navi002ov.gif) no-repeat;}
+ul.ul900_pro li.li903{ background:url(http://welcome.jmtech.co.jp/official/img/product/bu_navi003.gif) no-repeat;}
+ul.ul900_pro li.li903 a:hover{ background:url(http://welcome.jmtech.co.jp/official/img/product/bu_navi003ov.gif) no-repeat;}
+ul.ul900_pro li.li904{ background:url(http://welcome.jmtech.co.jp/official/img/product/bu_navi004.gif) no-repeat;}
+ul.ul900_pro li.li904 a:hover{ background:url(http://welcome.jmtech.co.jp/official/img/product/bu_navi004ov.gif) no-repeat;}
+ul.ul900_pro li.li905{ background:url(http://welcome.jmtech.co.jp/official/img/product/bu_navi005.gif) no-repeat;}
+ul.ul900_pro li.li905 a:hover{ background:url(http://welcome.jmtech.co.jp/official/img/product/bu_navi005ov.gif) no-repeat;}
+
+
+dl{ float:left;}
+dl dt{ background:url(http://welcome.jmtech.co.jp/official/img/product/h1002.gif) no-repeat; padding:8px 0 0 27px; width:218px; height:19px; font-size:12px; color:#393939; font-weight:bold;}
+dl dd{ font-size:12px; height:80px; width:218px;}
+dl dd ul{ font-size:12px; margin:10px 0 0 35px;}
+dl dd ul li{ list-style: disc; color:#464646;}
+dl dd.wi{width:255px;}
+div.indexsumbbox{ width:245px; padding:10px 0 0 0; height:auto;}
+
+
+ul.ul6000 li{ padding:0 0 8px 20px; font-size:12px;}
+ul.ul6000{}
+ul li.li6001{background:url(http://welcome.jmtech.co.jp/official/img/product/li6001.gif) no-repeat;}
+ul li.li6002{background:url(http://welcome.jmtech.co.jp/official/img/product/li6002.gif) no-repeat;}
+ul li.li6003{background:url(http://welcome.jmtech.co.jp/official/img/product/li6003.gif) no-repeat;}
+ul li.li6004{background:url(http://welcome.jmtech.co.jp/official/img/product/li6004.gif) no-repeat;}
+ul li.li6005{background:url(http://welcome.jmtech.co.jp/official/img/product/li6005.gif) no-repeat;}
+ul li.li6006{background:url(http://welcome.jmtech.co.jp/official/img/product/li6006.gif) no-repeat;}
+
+ul.ul7000{ margin:15px 40px 40px 40px;}
+ul.ul7000 li{ padding:0 0 2px 29px; font-size:12px;background:url(http://welcome.jmtech.co.jp/official/img/product/ico003.gif) no-repeat;}
+
+ul.ul8000{ margin:15px 40px 40px 40px;}
+ul.ul8000 li{ padding:0 0 2px 29px; font-size:12px;background:url(http://welcome.jmtech.co.jp/official/img/product/ico002.gif) no-repeat;}
+
+
+
+
+
+
+
+
