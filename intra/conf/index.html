@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta charset="utf-8">
-    <title>TelePresence · the open source SIP TelePresence client (WebRTC)</title>
+    <title>TelePresence client (WebRTC)</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="Keywords" content="doubango, VoIP, HTML5, WebRTC, RTCWeb, SIP, IMS, videoconference, Full HD, Ultra UD, telepresence, Video chat, VP8 ">
+    <meta name="Keywords" content="VoIP, HTML5, WebRTC, RTCWeb, SIP, IMS, videoconference, Full HD, Ultra UD, telepresence, Video chat, VP8 ">
     <meta name="description" content="Doubango open source SIP TelePresence System">
-    <meta name="author" content="Doubango Telecom">
+    <meta name="author" content="PT JMT Indonesia">
     <!-- Le styles -->
     <link href="bootstrap.css" rel="stylesheet">
     <style>
@@ -38,18 +38,20 @@
         tp = { debug: false };
         tp.config =
         {
-            realm: 'conf-call.org',
-            impi: 'johndoe',
-            display_name: 'John Doe',
-            job_title: 'Technology Evangelist',
-            websocket_proxy_url: 'ws://192.168.1.128:20060',
-            http_server_url: 'http://192.168.1.128:20065',
-            organization: 'Doubango Telecom',
+            realm: 'jmti.co.id',
+            impi: 'jmtijoe',
+            display_name: 'JMTI Joe',
+            job_title: 'Engineer',
+            websocket_proxy_url: 'ws://172.31.32.124:20060',
+            http_server_url: 'http://172.31.32.124:20065',
+            organization: 'PT JMT Indonesia',
             audio_velocity: '[0.0f, 0.0f, 0.0f]',
             audio_position: '[0.0f, 0.0f, 0.0f]',
             sip_outbound_proxy_url: null,
-            bandwidth: { audio:undefined, video:undefined },
-            video_size: { minWidth:undefined, minHeight:undefined, maxWidth:undefined, maxHeight:undefined },
+            //bandwidth: { audio:undefined, video:undefined },
+            bandwidth: { audio:64, video:512 },
+            //video_size: { minWidth:undefined, minHeight:undefined, maxWidth:undefined, maxHeight:undefined },
+            video_size: { minWidth:640, minHeight:480, maxWidth:640, maxHeight:480 },
             ice_servers: null,
             mute: false
         };
@@ -63,6 +65,7 @@
         tp.started = false;
         tp.callSession = null;
 
+/*
         tp.config_get_impi = function(){ return (window.localStorage.getItem('org.doubango.tp.config.impi') || tp.config.impi); }
         tp.config_get_display_name = function(){ return (window.localStorage.getItem('org.doubango.tp.config.display_name') || tp.config.display_name); }
         tp.config_get_realm = function(){ return (window.localStorage.getItem('org.doubango.tp.config.realm') || tp.config.realm); }
@@ -75,6 +78,20 @@
         tp.config_get_bandwidth = function(){ return (tsk_string_to_object(window.localStorage.getItem('org.doubango.tp.config.bandwidth')) || tp.config.bandwidth); }
         tp.config_get_video_size = function(){ return (tsk_string_to_object(window.localStorage.getItem('org.doubango.tp.config.video_size')) || tp.config.video_size); }
         tp.config_get_ice_servers = function(){ return (tsk_string_to_object(window.localStorage.getItem('org.doubango.tp.config.ice_servers')) || tp.config.ice_servers); }
+*/
+
+	tp.config_get_impi = function(){ return (tp.config.impi); }
+	tp.config_get_display_name = function(){ return (tp_txt_displayname.value); }
+	tp.config_get_realm = function(){ return (tp.config.realm); }
+	tp.config_get_job_title = function(){ return (tp_txt_job_title.value); }
+	tp.config_get_audio_velocity = function(){ return (tp.config.audio_velocity); }
+	tp.config_get_audio_position = function(){ return (tp.config.audio_position); }
+	tp.config_get_websocket_proxy_url = function(){ return (tp.config.websocket_proxy_url); }
+	tp.config_get_sip_outbound_proxy_url = function(){ return (tp.config.sip_outbound_proxy_url); }
+	tp.config_get_http_server_url = function(){ return (tp.config.http_server_url); }
+	tp.config_get_bandwidth = function(){ return (tp.config.bandwidth); }
+	tp.config_get_video_size = function(){ return (tp.config.video_size); }
+	tp.config_get_ice_servers = function(){ return (tp.config.ice_servers); }
 
         tp.init = function () {
             tsk_utils_log_info('[TELEPRESENCE] tp.init()');
@@ -586,8 +603,8 @@
                 <div class="nav-collapse collapse">
                     <ul class="nav">
 <!--                        <li><a target="_blank" href="https://code.google.com/p/telepresence/">source code</a></li>
-                        <li><a target="_blank" href="http://conf-call.org/technical-guide.pdf?svn=2">technical guide</a></li>-->
-                        <li><a href="settings.html">settings</a></li>
+                        <li><a target="_blank" href="http://conf-call.org/technical-guide.pdf?svn=2">technical guide</a></li>
+                        <li><a href="settings.html">settings</a></li>-->
 <!--                        <li><a target="_blank" href="http://conf-call.org/contact.htm">contact</a></li>-->
                     </ul>
                 </div>
@@ -663,6 +680,18 @@
             <tr>
                 <td style="white-space: nowrap;" align="center">
                     <label style="width: 100%;" align="center" id="tp_lbl_status"></label>
+                </td>
+            </tr>
+            <tr>
+            	<td>Name:</td>
+                <td style="white-space: nowrap;" align="center">
+                    <input type="text" style="width: 100%; height: 100%; font-size:12px" id="tp_txt_displayname" value="JMTI Joe" title="Name">
+                </td>
+            </tr>
+            <tr>
+            	<td>Position:</td>
+                <td style="white-space: nowrap;" align="center">
+                    <input type="text" style="width: 100%; height: 100%; font-size:12px" id="tp_txt_job_title" value="JMTI Staff" title="Position">
                 </td>
             </tr>
             <tr>
