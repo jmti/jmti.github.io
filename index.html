@@ -1,694 +1,1373 @@
 <!DOCTYPE html>
-<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<html lang="en">
+  <head>
     <meta charset="utf-8">
-    <title>TelePresence · the open source SIP TelePresence client (WebRTC)</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="Keywords" content="doubango, VoIP, HTML5, WebRTC, RTCWeb, SIP, IMS, videoconference, Full HD, Ultra UD, telepresence, Video chat, VP8 ">
-    <meta name="description" content="Doubango open source SIP TelePresence System">
-    <meta name="author" content="Doubango Telecom">
-    <!-- Le styles -->
-    <link href="bootstrap.css" rel="stylesheet">
-    <style>
-        body
-        {
-            padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
-        }
-        html, body
-        {
-            height: 100%;
-        }
-        .div-options 
-        {
-            z-index: 100;
-            position: fixed;
-        }
-    </style>
-    <link href="bootstrap-responsive.css" rel="stylesheet">
-    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <title>JM Technology Indonesia</title>
+
+    <!-- theme -->
+    <link href="css/rockox.css" rel="stylesheet">
+    <link href="css/rockox-main.css" rel="stylesheet">
+    
+	<!-- animation -->
+    <link href="css/animate.css" rel="stylesheet">
+	
+	<link href="css/prettyPhoto.css" rel="stylesheet">
+	
+    
+    <!-- piecharts -->
+    <link rel="stylesheet" href="css/pie-charts-style.css">
+	
+    <!-- Add fancyBox -->
+	<link rel="stylesheet" href="css/jquery.fancybox.css?v=2.1.5" media="screen">
+
+	<!-- jcarousel styling -->
+	<link rel="stylesheet" href="css/skin.css">
+    
+    <!-- Bootstrap -->
+    <link href="css/bootstrap.css" rel="stylesheet">
+    
+    
+    <!-- CSS STYLE -->
+    <link rel="stylesheet" type="text/css" href="css/revolution_style.css" media="screen" />		
+	
+	
+		
+		
+	<!-- REVOLUTION BANNER CSS SETTINGS -->
+	<link rel="stylesheet" type="text/css" href="css/settings.css" media="screen" />
+    
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
-      <script src="../assets/js/html5shiv.js"></script>
-    <![endif]-->
-    <!-- Fav and touch icons -->
-    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="apple-touch-icon-144-precomposed.png">
-    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="apple-touch-icon-114-precomposed.png">
-    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="apple-touch-icon-72-precomposed.png">
-    <link rel="apple-touch-icon-precomposed" href="apple-touch-icon-57-precomposed.png">
-    <link rel="shortcut icon" href="favicon.png">
-    <script async="" src="analytics.js"></script><script type="text/javascript">
-        tp = { debug: false };
-        tp.config =
-        {
-            realm: 'conf-call.org',
-            impi: 'johndoe',
-            display_name: 'John Doe',
-            job_title: 'Technology Evangelist',
-            websocket_proxy_url: 'ws://192.168.1.128:20060',
-            http_server_url: 'http://192.168.1.128:20065',
-            organization: 'Doubango Telecom',
-            audio_velocity: '[0.0f, 0.0f, 0.0f]',
-            audio_position: '[0.0f, 0.0f, 0.0f]',
-            sip_outbound_proxy_url: null,
-            bandwidth: { audio:undefined, video:undefined },
-            video_size: { minWidth:undefined, minHeight:undefined, maxWidth:undefined, maxHeight:undefined },
-            ice_servers: null,
-            mute: false
-        };
-        tp.presentation =
-        {
-            sharing: false,
-            name: "unknown.ppt",
-            page_index: 0,
-            page_count: 0
-        };
-        tp.started = false;
-        tp.callSession = null;
-
-        tp.config_get_impi = function(){ return (window.localStorage.getItem('org.doubango.tp.config.impi') || tp.config.impi); }
-        tp.config_get_display_name = function(){ return (window.localStorage.getItem('org.doubango.tp.config.display_name') || tp.config.display_name); }
-        tp.config_get_realm = function(){ return (window.localStorage.getItem('org.doubango.tp.config.realm') || tp.config.realm); }
-        tp.config_get_job_title = function(){ return (window.localStorage.getItem('org.doubango.tp.config.job_title') || tp.config.job_title); }
-        tp.config_get_audio_velocity = function(){ return (window.localStorage.getItem('org.doubango.tp.config.audio_velocity') || tp.config.audio_velocity); }
-        tp.config_get_audio_position = function(){ return (window.localStorage.getItem('org.doubango.tp.config.audio_position') || tp.config.audio_position); }
-        tp.config_get_websocket_proxy_url = function(){ return (window.localStorage.getItem('org.doubango.tp.config.websocket_server_url') || tp.config.websocket_proxy_url); }
-        tp.config_get_sip_outbound_proxy_url = function(){ return (window.localStorage.getItem('org.doubango.tp.config.sip_outboundproxy_url') || tp.config.sip_outbound_proxy_url); }
-        tp.config_get_http_server_url = function(){ return (window.localStorage.getItem('org.doubango.tp.config.http_server_url') || tp.config.http_server_url); }
-        tp.config_get_bandwidth = function(){ return (tsk_string_to_object(window.localStorage.getItem('org.doubango.tp.config.bandwidth')) || tp.config.bandwidth); }
-        tp.config_get_video_size = function(){ return (tsk_string_to_object(window.localStorage.getItem('org.doubango.tp.config.video_size')) || tp.config.video_size); }
-        tp.config_get_ice_servers = function(){ return (tsk_string_to_object(window.localStorage.getItem('org.doubango.tp.config.ice_servers')) || tp.config.ice_servers); }
-
-        tp.init = function () {
-            tsk_utils_log_info('[TELEPRESENCE] tp.init()');
-
-            tp.audio_remote = document.createElement('audio');
-            tp.audio_remote.autoplay = "autoplay";
-            tp.audio_ringbacktone = document.createElement('audio');
-            tp.audio_ringbacktone.src = "./sounds/ringbacktone.wav";
-            tp.audio_ringbacktone.loop = true;
-
-            tp.div_glass = document.getElementById('tp_div_glass');
-            tp.button_call = document.getElementById('tp_btn_call');
-
-            tp.button_call.onclick = function () {
-                if (tsk_string_is_null_or_empty(tp_txt_bridge_id.value)) {
-                    tp_lbl_status.innerHTML = 'Bridge identifier must not be empty';
-                    return;
-                }
-
-                // save bridge info
-                window.localStorage.setItem('org.doubango.tp.config.bridge_id', tp_txt_bridge_id.value);
-                window.localStorage.setItem('org.doubango.tp.config.bridge_pin', tp_txt_bridge_pin.value);
-
-                if (!tp.stack) {
-                    var display_name = tp.config_get_display_name();
-                    var realm = tp.config_get_realm();
-                    var impi = tp.config_get_impi();
-                    var websocket_proxy_url = tp.config_get_websocket_proxy_url();
-                    var sip_outbound_proxy_url = tp.config_get_sip_outbound_proxy_url();
-                    var ice_servers = tp.config_get_ice_servers();
-                    var video_size = tp.config_get_video_size();
-                    var bandwidth = tp.config_get_bandwidth();
-
-                    tsk_utils_log_info(
-                        '[TELEPRESENCE] realm=[' + realm + '], impi=[' + impi + '],' 
-                        + 'ws_url=[' + websocket_proxy_url + '],'
-                        + 'ice_servers=' +JSON.stringify(ice_servers) + ','
-                        + 'video_size=' + JSON.stringify(video_size) + ','
-                        + 'bandwidth=' + JSON.stringify(bandwidth)
-                    );
-
-                    tp.stack = new SIPml.Stack({ realm: realm, impi: impi, impu: 'sip:' + impi + '@' + realm, password: 'mysecret',
-                        events_listener: { events: '*', listener: function (e) {
-                            tsk_utils_log_info('[TELEPRESENCE] stack event = ' + e.type);
-
-                            switch (e.type) {
-                                case 'starting':
-                                    {
-                                        tp_lbl_status.innerHTML = 'connecting to mcu...';
-                                        break;
-                                    }
-                                case 'started':
-                                    {
-                                        tp_lbl_status.innerHTML = 'connected';
-                                        tp.started = true;
-                                        tp.call();
-                                        break;
-                                    }
-                                case 'stopped':
-                                case 'stopping':
-                                    {
-                                        tp.callSession = null;
-                                        tp.audio_ringbacktone.pause();
-                                        tp.started = false;
-                                        tp_lbl_status.innerHTML = (e.type === 'stopped') ? 'disconnected' : 'disconnecting...';
-                                        tp_div_call_options.style.visibility = 'hidden';
-                                        tp_div_presentation.style.visibility = 'hidden';
-                                        tp_div_call.style.visibility = 'visible';
-                                        tp_video_local.style.opacity = tp_video_remote.style.opacity = 0;
-                                        tp.fullscreen(false);
-                                        if (e.type === 'stopped') {
-                                            tp.button_call.value = 'join';
-                                            tp.callSession = null;
-                                            tp.stack = null;
-                                        }
-                                        break;
-                                    }
-                                case 'failed_to_start':
-                                    {
-                                        tp_lbl_status.innerHTML = 'failed to connect';
-                                        break;
-                                    }
-                                case 'm_permission_requested':
-                                    {
-                                        tp.div_glass.style.visibility = 'visible';
-                                        break;
-                                    }
-                                case 'm_permission_accepted':
-                                case 'm_permission_refused':
-                                    {
-                                        tp.div_glass.style.visibility = 'hidden';
-                                        break;
-                                    }
-                                    break;
-                            } //switch
-                        } //callback
-                        }, //events_listener
-                        display_name: display_name,
-                        enable_rtcweb_breaker: false,
-                        enable_click2call: false,
-                        websocket_proxy_url: websocket_proxy_url,
-                        outbound_proxy_url: sip_outbound_proxy_url,
-                        ice_servers: ice_servers,
-                        bandwidth: bandwidth,
-                        video_size: video_size
-                    }/*stack-config*/);
-                }
-                if (!tp.started) {
-                    tp.stack.start();
-                }
-                else {
-                    tp.call();
-                }
-            };
-
-            document.body.appendChild(tp.audio_remote);
-
-            SIPml.init(
-                        function (e) { // successCallback
-                            tp.button_call.disabled = false;
-                            document.body.style.cursor = 'default';
-                        },
-                        function (e) { // errorCallback
-                            tp.button_call.disabled = true;
-                            tp_lbl_status.innerHTML = e.description;
-                            document.body.style.cursor = 'default';
-                        }
-                    );
-        }
-
-        tp.fullscreen = function (start) {
-            if (tp_video_remote.webkitSupportsFullscreen) {
-                if (start) {
-                    tp_video_remote.webkitEnterFullScreen();
-                }
-                else {
-                    tp_video_remote.webkitExitFullscreen();
-                }
-            }
-        }
-
-        tp.call = function () {
-            tsk_utils_log_info('[TELEPRESENCE] tp.call()');
-
-            if (!tp.stack) {
-                // link-address hack
-                tp.button_call.click();
-                return;
-            }
-
-            if (tp.callSession) {
-                tp.callSession.hangup();
-                return;
-            }
-
-            var display_name = tp.config_get_display_name();
-            var realm = tp.config_get_realm();
-            var impi = tp.config_get_impi;
-            var job_title = tp.config_get_job_title();
-            var audio_velocity = tp.config_get_audio_velocity();
-            var audio_position = tp.config_get_audio_position();
-
-            var from = /*"sip:" + impi + "@" + realm*/null;
-            // var from = '\"'+display_name+'\"<sip:'+impi+'@'+realm+'>'
-            var to = tp_txt_bridge_id.value;
-
-            tp.stack.setConfiguration({
-                display_name: display_name
-                // more new values here
-            });
-
-            tsk_utils_log_info('[TELEPRESENCE] making call from [' + from + '] to [' + to + ']...');
-
-            var call_listener = function (e) {
-                tsk_utils_log_info('[TELEPRESENCE] session event = ' + e.type);
-                switch (e.type) {
-                    case 'connecting': case 'connected':
-                        {
-                            if (e.session === tp.callSession) {
-                                tp.button_call.value = 'hang up';
-                                if(e.type === 'connected') {
-                                    tp_lbl_status.innerHTML = 'in call';
-                                    tp_div_call.style.visibility = 'hidden';
-                                }
-                                else { // connecting
-                                    tp_lbl_status.innerHTML = 'joining...';
-
-                                    tp.presentation.sharing = false; tp_btn_presentation_toggle.value = "share presentation";
-                                    tp.presentation.page_count = tp.presentation.page_count = 0;
-                                    tp.config.mute = false; tp_btn_mute.value = "mute";
-                                    tp_div_call.style.visibility = 'visible';
-                                }
-                            }
-                            break;
-                        }
-                    case 'i_ao_request':
-                        {
-                            if (e.session === tp.callSession) {
-                                var code = e.getSipResponseCode();
-                                if (code == 180 || code == 183) {
-                                    tp.audio_ringbacktone.play();
-                                    tp_lbl_status.innerHTML = 'ringing...';
-                                }
-                            }
-                            break;
-                        }
-                    case 'm_early_media':
-                        {
-                            if (e.session === tp.callSession) {
-                                tp.audio_ringbacktone.pause();
-                                tp_lbl_status.innerHTML = 'early media...';
-                            }
-                            break;
-                        }
-                    case 'm_stream_video_local_added':
-                    case 'm_stream_video_local_removed':
-                    case 'm_stream_video_remote_added':
-                    case 'm_stream_video_remote_removed':
-                        {
-                            if (e.session === tp.callSession) {
-                                if (e.type === 'm_stream_video_local_added') tp_video_local.style.opacity = 1;
-                                else if (e.type === 'm_stream_video_local_removed') tp_video_local.style.opacity = 0;
-                                else if (e.type === 'm_stream_video_remote_added') { 
-                                    tp_video_remote.style.opacity = 1; 
-                                    tp_div_call_options.style.visibility = 'visible'; 
-                                    tp_div_call.style.visibility = 'hidden';
-
-                                    tp_btn_presentation_toggle.disabled = false;
-                                }
-                                else if (e.type === 'm_stream_video_remote_removed') { 
-                                    tp_video_remote.style.opacity = 0; 
-                                    tp.fullscreen(false);
-
-                                    tp_btn_presentation_toggle.disabled = true;
-                                }
-                            }
-                            break;
-                        }
-                    case "i_info":
-                        {
-                            if (e.session === tp.callSession) {
-                                if (e.getContentType() === 'application/json') {
-                                    var JSONObject = JSON.parse(e.getContentString());
-                                    if(JSONObject.action === 'res_presentation_state') {
-                                        tp_btn_presentation_toggle.disabled = false;
-                                        tp_btn_presentation_toggle.value = (JSONObject.state === 'closed' || JSONObject.state === 'error') ? "share presentattion" : "close presentation";
-                                        tp_div_presentation.style.visibility = (JSONObject.state === 'closed' || JSONObject.state === 'error') ? 'hidden' : 'visible';
-                                        tp.presentation.sharing = (JSONObject.state != 'closed' && JSONObject.state != 'error');
-                                        if(JSONObject.state === 'closed' || JSONObject.state === 'error') {
-                                            
-                                        }
-                                        else if(JSONObject.state === 'opened') {
-                                            tp.presentation.page_index = 0;
-                                            tp.presentation.page_count = tp.parseInt(JSONObject.page_count, 0);
-                                            tp.presentation_goto(0);
-                                        }
-                                        else if(JSONObject.state === 'exported') {
-                                            tp.presentation.page_index = tp.parseInt(JSONObject.page_index, tp.presentation.page_index);
-                                            tp_lbl_presname.innerHTML = tp.presentation.name + "(" + (JSONObject.page_index + 1) + " / " + JSONObject.page_count + ")";
-                                        }
-                                    }
-                                }
-                            }
-                            break;
-                        }
-                    case 'terminating': case 'terminated':
-                        {
-                            if (e.session === tp.callSession) {
-                                tp_lbl_status.innerHTML = e.description.toLowerCase();
-                                tp.button_call.value = 'join';
-                                tp.callSession = null;
-                                tp.audio_ringbacktone.pause();
-                                tp.div_glass.style.visibility = 'hidden';
-                                tp_div_call_options.style.visibility = 'hidden';
-                                tp_div_presentation.style.visibility = 'hidden';
-                                tp_div_call.style.visibility = 'visible';
-                                tp_video_local.style.opacity = tp_video_remote.style.opacity = 0;
-                                tp.fullscreen(false);
-                                window.setTimeout(function () { tp_lbl_status.innerHTML = ''; }, 2000);
-                            }
-                            break;
-                        }
-                }
-            };
-
-
-            tp.callSession = tp.stack.newSession('call-audiovideo', {
-                from: from,
-                audio_remote: tp.audio_remote,
-                video_local: /* tp_video_local */null,
-                video_remote: tp_video_remote,
-                bandwidth: tp.config_get_bandwidth(),
-                video_size: tp.config_get_video_size(),
-                events_listener: { events: '*', listener: call_listener },
-                sip_caps: [
-                                        { name: '+g.oma.sip-im' },
-                                        { name: '+sip.ice' },
-                                        { name: 'language', value: '\"en,fr\"' }
-                                    ],
-                sip_headers: [
-                        { name: 'TP-JobTitle', value: job_title, session: true },
-                        { name: 'TP-BridgePin', value: tp_txt_bridge_pin.value, session: true },
-                        { name: 'TP-AudioPosition', value: audio_position, session: true },
-                        { name: 'TP-AudioVelocity', value: audio_velocity, session: true },
-                        { name: 'Organization', value: tp.config.organization, session: true }
-                ]
-            });
-            tp.callSession.call(to);
-        }
-
-        tp.hangup = function() {
-            if(tp.callSession) {
-                tp.callSession.hangup();
-            }
-        }
-
-        tp.parseInt = function(s_str, i_default) {
-            try{ return parseInt(s_str); }
-            catch(e){ return i_default; }
-        }
-
-        tp.place_div = function (div, s_location, b_make_visible) {
-            if(b_make_visible) {
-                div.style.visibility = 'visible';
-            }
-            switch(s_location) {
-                case 'top-center':
-                default:
-                    {
-                        div.style.top = tp_div_navbar.clientHeight + 5 + 'px';
-                        div.style.left = ((document.body.clientWidth - div.clientWidth) >> 1) + 'px';
-                        break;
-                    }
-                case 'top-right':
-                    {
-                        div.style.top = tp_div_navbar.clientHeight + 5 + 'px';
-                        div.style.left = (document.body.clientWidth - div.clientWidth - 20) + 'px';
-                        break;
-                    }
-                case 'top-left':
-                    {
-                        div.style.top = tp_div_navbar.clientHeight + 5 + 'px';
-                        div.style.left = '20px';
-                        break;
-                    }
-                case 'center-center':
-                    {
-                        div.style.top = ((document.body.clientHeight - div.clientHeight) >> 1) + 'px';
-                        div.style.left = ((document.body.clientWidth - div.clientWidth) >> 1) + 'px';
-                        break;
-                    }
-                    
-            }
-        }
-
-        tp.close_div = function (div) {
-            div.style.visibility = 'hidden';
-        }
-
-        tp.upload_files = function(files) {
-            if(files.length > 0) {
-                var file = files[0];
-                tp_btn_presentation_toggle.disabled = true;
-                tp.presentation.name = file.name;
-
-                tsk_utils_log_info('[TELEPRESENCE] sharing file with name =' + file.name + ' using http_server_url =' + tp.config_get_http_server_url());
-
-                var reader = null;
-                var xhr = new XMLHttpRequest();
-                var JSONText = JSON.stringify
-                (
-                        {
-                            action: 'req_presentation_upload',
-                            name: file.name,
-                            type: file.type,
-                            size: file.size,
-                            bridge_id: tp_txt_bridge_id.value,
-                            bridge_pin: tp_txt_bridge_pin.value,
-                            user_id: tp.config_get_impi()
-                        }
-                );
-
-                // https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest
-                if(!XMLHttpRequest.prototype.sendAsBinary) {
-                    XMLHttpRequest.prototype.sendAsBinary = function(datastr) {
-                        function byteValue(x) {
-                            return x.charCodeAt(0) & 0xff;
-                        }
-                        var ords = Array.prototype.map.call(datastr, byteValue);
-                        var ui8a = new Uint8Array(ords);
-                        this.send(ui8a.buffer);
-                    }
-                }
-
-                var self = this;
-                xhr.onreadystatechange = function (e) {
-                    var JSONObject;
-                    try{
-                        if (this.readyState == XMLHttpRequest.DONE) {
-                            if (this.status == 200 && this.readyState == XMLHttpRequest.DONE){
-                                if(!reader) {
-                                    xhr.open("POST", tp.config_get_http_server_url() + "/presentation");
-                                    xhr.setRequestHeader("Content-type", "application/file");
-                                    reader = new FileReader();
-                                    // send file data 
-                                    reader.onload = function (evt) {
-                                        xhr.sendAsBinary(evt.target.result);
-                                    };
-                                    reader.readAsBinaryString(file);
-                                }
-                                else {
-                                    xhr.abort();
-                                }
-                                if(this.responseText) {
-                                    tsk_utils_log_info('[TELEPRESENCE] RECV: ' + this.responseText);
-                                }
-                            }
-                            else {
-                                tsk_utils_log_error('[TELEPRESENCE] ' + JSON.stringify({ status: this.status, statusText: this.statusText ? 'timeout' : this.statusText, JSONObject: JSONObject }));
-                            }
-                        }
-            
-                    }
-                    catch(ex) {
-                        tsk_utils_log_error('[TELEPRESENCE] ' + ex.toString());
-                    }
-                }
-                xhr.upload.addEventListener("progress", function (e) {
-                    if (e.lengthComputable) {
-                        var percentage = Math.round((e.loaded * 100) / e.total);
-                        tp_lbl_presname.innerHTML = tp.presentation.name + "("+ percentage +"%)";
-                    }
-                }, false);
-
-                xhr.upload.addEventListener("load", function (e) {
-                    tsk_utils_log_info('[TELEPRESENCE] Uploading: ' + tp.presentation.name + 'done!');
-                }, false);
-                xhr.open("POST", tp.config_get_http_server_url() + "/presentation");
-                //xhr.overrideMimeType(file.type);
-                xhr.setRequestHeader("Content-type", "application/json");
-                xhr.send(JSONText);
-            }
-            tp_file_elem.value = "";
-        } // endof (tp.upload_files())
-
-        tp.presentation_goto = function(i_index) {
-            if(tp.callSession && i_index >= 0 && i_index < tp.presentation.page_count) {
-                tp.callSession.info(JSON.stringify({action: 'req_presentation_goto', page_index: i_index}), 'application/json');
-            }
-        }
-        tp.presentation_next = function() {
-            tp.presentation_goto(tp.presentation.page_index + 1);
-        }
-        tp.presentation_prev = function() {
-            tp.presentation_goto(tp.presentation.page_index - 1);
-        }
-        tp.presentation_close = function() {
-            if(tp.callSession) {
-                tp_btn_presentation_toggle.disabled = true;
-                tp.callSession.info(JSON.stringify({action: 'req_presentation_close'}), 'application/json');
-            }
-        }
-        tp.presentation_upload = function() {
-            if(tp.callSession) {
-                tp_file_elem.click();
-            }
-        }
-        tp.presentation_toggle = function() {
-            if(tp.presentation.sharing) {
-                tp.presentation_close();
-            }
-            else {
-                tp.presentation_upload();
-            }
-        }
-
-        tp.mute_toggle = function() {
-            if(tp.callSession) {
-                if(tp.callSession.info(JSON.stringify({action: 'req_call_mute', enabled: !tp.config.mute}), 'application/json') == 0) {
-                    tp.config.mute =!tp.config.mute; // FIXME: wait for 'res_call_mute'
-                    tp_btn_mute.value = tp.config.mute ? "unmute" : "mute";
-                }
-            }
-        }
-
-        document.addEventListener('DOMContentLoaded', function () {
-            tp_txt_bridge_id.value = (window.localStorage.getItem('org.doubango.tp.config.bridge_id') || '');
-            tp_txt_bridge_pin.value = (window.localStorage.getItem('org.doubango.tp.config.bridge_pin') || '');
-
-            tp.init();
-        });
-
-        window.onload = function () {
-            tp.place_div(tp_div_call, 'top-center', true);
-            tp.place_div(tp_div_presentation, 'top-right');
-            tp.place_div(tp_div_call_options, 'top-left');
-        }
-    </script>
-</head>
-<body style="cursor: default;">
-    <div id="tp_div_navbar" class="navbar navbar-inverse navbar-fixed-top">
-        <div class="navbar-inner">
-            <div class="container">
-                <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-                    <span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar">
-                    </span>
-                </button>
-                <a class="brand" href="index.html">JMTI Internal Conference</a>
-                <div class="nav-collapse collapse">
-                    <ul class="nav">
-<!--                        <li><a target="_blank" href="https://code.google.com/p/telepresence/">source code</a></li>
-                        <li><a target="_blank" href="http://conf-call.org/technical-guide.pdf?svn=2">technical guide</a></li>-->
-                        <li><a href="settings.html">settings</a></li>
-<!--                        <li><a target="_blank" href="http://conf-call.org/contact.htm">contact</a></li>-->
-                    </ul>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]--> 
+  </head>
+  <body class="fixed-header" data-spy="scroll" data-target=".navbar">
+  	
+    <!-- BEGIN HEADER -->
+         
+   <header id="home">
+		
+  		<!--<div class="top-bar">
+        	<div class="container">
+            	<span><i class="fa fa-mobile"></i> + 386 40 111 5555 </span>
+        		<div class="social">
+                  	<a href="#." class="tw"><i class="fa fa-twitter"></i></a>
+                    <a href="#." class="fb"><i class="fa fa-facebook"></i></a>
+                    <a href="#." class="yt"><i class="fa fa-youtube"></i></a>
+                    <a href="#." class="ig"><i class="fa fa-instagram"></i></a>
+                    <a href="#." class="db"><i class="fa fa-dribbble"></i></a>
                 </div>
-                <!--/.nav-collapse -->
+            </div>
+        </div>	-->
+    
+	    <nav class="navbar navbar-default" role="navigation">
+		
+          <div class="container">
+		  
+            <!-- Brand and toggle get grouped for better mobile display -->
+          <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              <!-- BEGIN LOGO -->
+				<a class="navbar-brand" href="#home"><img src="images/head_m_01.png" alt=""></a>
+              <!-- END LOGO -->
+           </div>
+        
+            <!-- Collect the nav links, forms, and other content for toggling -->
+           <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            	<!-- BEGIN NAVIGATION -->
+                 <ul class="nav navbar-nav">
+                    <li class="active"><a href="#home">Home</a></li>
+					<li><a href="#productsandservices">Products and Services</a></li>
+                    <li><a href="#newsslider">news</a></li>
+                    <li><a href="#companyprofile">Company Profile</a></li>
+                    <li><a href="#recruitment">Recruitment</a></li>
+                   
+                  <!--   <li><a href="#portfolio">portfolio</a></li>
+                    <li><a href="#best-sellers">shop</a></li>
+                    <li><a href="#contact-us">contact us</a></li>-->
+                 </ul>
+            	<!-- END NAVIGATION -->
+            </div><!-- /.navbar-collapse -->
+        </div><!-- /.container-fluid -->
+     </nav>
+    </header>
+    <!-- END HEADER -->
+	
+	
+    <!-- BEGIN BANNER -->
+    <div class="fullwidthbanner-container">					
+        <div class="fullwidthbanner">
+            <ul>	
+                <!-- FADE -->
+                <li data-transition="fade" data-slotamount="10"> 										
+                    <img src="images/slides/slide1.png" alt="" />									
+                    <!--<div class="caption lfr" data-x="820" data-y="70" data-speed="1200" data-start="1300" data-easing="easeOutBack"><img src="images/slides/women.png" alt="" /></div>
+                    <div class="caption lfb" data-x="570" data-y="0" data-speed="19000" data-start="3400" data-easing="easeOutBack"><img src="images/slides/para-large.png" alt="" /></div>
+                    <div class="caption lfb" data-x="430" data-y="450" data-speed="12200" data-start="3400" data-easing="easeOutBack"><img src="images/slides/para-small.png" alt="" /></div>-->
+                    <div class="caption lft very_large_text3" data-x="30" data-y="220" data-speed="1800" data-start="2000" data-easing="easeOutExpo">it infra services</div>	
+                   <!-- <div class="caption lft very_large_text2" data-x="215" data-y="220" data-speed="1800" data-start="2000" data-easing="easeOutExpo"></div>	
+                    <div class="caption lfl medium_grey" data-x="30" data-y="305" data-speed="300" data-start="2500" data-easing="easeOutExpo">Quisque ultricies vestibulum Graphic t river molestie </div>
+                    <div class="caption lfb small_text" data-x="30" data-y="328" data-speed="1800" data-start="2600" data-easing="easeOutExpo">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi sagittis, sem quis lacinia faucibus, orci ipsum gravida tortor,<br/> vel interdum mi sapien ut justo.Nulla varius consequat magna</div>-->
+                    <div class="caption sfb" data-x="30" data-y="375" data-speed="1800" data-start="3400" data-easing="easeOutBack"><a href="it_infra_service.html" target="_self" class="button blue small">READ MORE</a></div>
+                </li>
+                <!-- FADE -->
+                <li data-transition="fade" data-slotamount="10"> 										
+                    <img src="images/slides/slide2.png" alt="" />
+                    <!--<div class="caption lfl" data-x="870" data-y="60" data-speed="20999" data-start="3000" data-easing="easeOutBack"><img src="images/slides/color-large-para.png" alt="" /></div>
+                    <div class="caption lfr" data-x="430" data-y="450" data-speed="20999" data-start="3000" data-easing="easeOutBack"><img src="images/slides/color-small-para.png" alt="" /></div>-->
+                    <div class="caption lft very_large_text3" data-x="30" data-y="220" data-speed="1200" data-start="1500" data-easing="easeOutExpo">System Development</div>	
+                    <!--<div class="caption lfl medium_grey2" data-x="230" data-y="305" data-speed="0" data-start="2500" data-easing="easeOutExpo">Quisque ultricies vestibulum Graphic or river molestie ultricies vestibulum Graphic </div>-->
+          <div class="caption sfb" data-x="30" data-y="340" data-speed="1200" data-start="2000" data-easing="easeOutBack"><a href="system_development.html" target="self" class="button blue small">READ MORE</a></div>
+                </li>
+                <!-- FADE -->
+                  <!-- <li data-transition="fade" data-slotamount="10"> 										
+                      <img src="images/slides/thumb3.jpg" alt="" />
+                   <div class="caption lfb" data-x="820" data-y="110" data-speed="1500" data-start="1300" data-easing="easeOutBack"><img src="images/slides/tablet.png" alt="" /></div>
+                     <div class="caption lft very_large_text4" data-x="30" data-y="215" data-speed="1800" data-start="2000" data-easing="easeOutExpo">3D CAD</div>	
+                    <div class="caption lft very_large_text5" data-x="230" data-y="220" data-speed="1800" data-start="2000" data-easing="easeOutExpo">Training Service</div>	
+                    <!--<div class="caption lfl medium_grey2" data-x="30" data-y="305" data-speed="300" data-start="2500" data-easing="easeOutExpo">Quisque ultricies vestibulum Graphic t river molestie </div>
+                    <div class="caption lfb small_text2" data-x="30" data-y="328" data-speed="1800" data-start="2600" data-easing="easeOutExpo">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi sagittis, sem quis lacinia faucibus orci ipsum,<br/> gravida tortor vel interdum mi sapien ut justo.Nulla varius consequat magna</div>
+                    <div class="caption sfb" data-x="30" data-y="375" data-speed="1800" data-start="3000" data-easing="easeOutBack"><a href="index.html" target="_blank" class="button blue small">READ MORE</a></div>
+                </li>-->
+				<!-- FADE -->
+				<!--<li data-transition="fade" data-slotamount="10"> 										
+                    <img src="images/slides/thumb4.jpg" alt="" />									
+                    <!--<div class="caption lfr" data-x="820" data-y="70" data-speed="1200" data-start="1300" data-easing="easeOutBack"><img src="images/slides/women.png" alt="" /></div>
+                    <div class="caption lfb" data-x="570" data-y="0" data-speed="19000" data-start="3400" data-easing="easeOutBack"><img src="images/slides/para-large.png" alt="" /></div>
+                    <div class="caption lfb" data-x="430" data-y="450" data-speed="12200" data-start="3400" data-easing="easeOutBack"><img src="images/slides/para-small.png" alt="" /></div>-->
+                    <!--<div class="caption lft very_large_text" data-x="30" data-y="220" data-speed="1800" data-start="2000" data-easing="easeOutExpo">Catia V5</div>	
+                    <!--<div class="caption lft very_large_text2" data-x="215" data-y="220" data-speed="1800" data-start="2000" data-easing="easeOutExpo"></div>	
+                    <div class="caption lfl medium_grey" data-x="30" data-y="305" data-speed="300" data-start="2500" data-easing="easeOutExpo">Quisque ultricies vestibulum Graphic t river molestie </div>
+                    <div class="caption lfb small_text" data-x="30" data-y="328" data-speed="1800" data-start="2600" data-easing="easeOutExpo">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi sagittis, sem quis lacinia faucibus, orci ipsum gravida tortor,<br/> vel interdum mi sapien ut justo.Nulla varius consequat magna</div>
+                    <div class="caption sfb" data-x="30" data-y="375" data-speed="1800" data-start="3400" data-easing="easeOutBack"><a href="index.html" target="_blank" class="button red small">READ MORE</a></div>-->
+               <!-- </li>-->
+            </ul>		
+            <div class="tp-bannertimer"></div>												
+        </div>					
+	</div>
+    <!-- END BANNER -->
+	    
+    <!-- BEGIN PORTFOLIO CONTAINER -->
+    <section class="no-padding-bottom experience" id="productsandservices">
+    	<div class="container">
+        	<!-- BEGIN HEADING -->
+        	<h2 class="purple text-center">Products And Services<span></h2>Japan has been leading world's mobile content market since late 90s. JM Technology Indonesia leverages Japan's technology and know-how in mobile-oriented IT solutions and contents to contribute to Indonesia and the rest of the world.</span>
+            <!-- END HEADING -->
+        </div>
+
+	       <div  id="filters">
+           		<!-- BEGIN PORTFOLIO NAV -->
+                <ul class="clearfix">
+					<!--<li><a href="#" data-filter="*" class="active"><h3>All</h3></a></li>
+                     <li><a href="#" data-filter=".services"><h3>IT Services</h3></a></li>
+                    <li><a href="#" data-filter=".products"><h3>IT Products</h3></a></li>
+                    <li><a href="#" data-filter=".cad"><h3>3D CAD Training Service</h3></a></li>
+                   <li><a href="#" data-filter=".videography"><h3>Videography</h3></a></li>
+                    <li><a href="#" data-filter=".web"><h3>Web</h3></a></li>-->
+                </ul>
+                <!-- END PORTFOLIO NAV -->
+            </div>
+
+
+           <div id="portfolio-items-wrap" class="fadeInUp">
+            <!-- BEGIN PORTFOLIO -->
+            <!--<div class="portfolio-item design photography services products cad">
+               <div class="portfolio">
+                  <div class="img-overlay"></div>
+                    <a href="images/portfolio/portfolio1.jpg" class="portfolio-image fancybox">
+                      <i class="fa fa-search"></i>
+                    </a>
+                    <a href="http://google.com" target="_self">
+                      <i class="fa fa-link"></i>
+                    </a>
+                    <img src="images/portfolio/portfolio1.jpg" alt="">
+               </div>
+            </div>
+            <!-- END PORTFOLIO -->
+            <!-- BEGIN PORTFOLIO -->
+            <!--<div class="portfolio-item videography web services fadeInUp">
+               <div class="portfolio">
+                  <div class="img-overlay"></div>
+                 	 <a href="images/portfolio/portfolio2.jpg" class="portfolio-image fancybox">
+                      <i class="fa fa-search"></i>
+                      </a>
+                      <a href="http://google.com" target="_self">
+                      <i class="fa fa-link"></i>
+                      </a>
+                      <img src="images/portfolio/portfolio2.jpg" alt="">
+               </div>
+            </div>
+			<!-- END PORTFOLIO -->
+            <!-- BEGIN PORTFOLIO -->
+            <!--<div class="portfolio-item videography branding services design photography services">
+               <div class="portfolio">
+                  <div class="img-overlay"></div>
+                  <a href="images/portfolio/portfolio3.jpg" class="portfolio-image fancybox">
+                      <i class="fa fa-search"></i>
+                      </a>
+                      <a href="http://google.com" target="_self">
+                      <i class="fa fa-link"></i>
+                      </a>
+                      <img src="images/portfolio/portfolio3.jpg" alt=""> 
+               </div>
+            </div>
+			<!-- END PORTFOLIO -->
+            <!-- BEGIN PORTFOLIO -->
+            <!--<div class="portfolio-item branding design services cad fadeInUp">
+               <div class="portfolio">
+                  <div class="img-overlay"></div>
+                     <a href="images/portfolio/portfolio4.jpg" class="portfolio-image fancybox">
+                      <i class="fa fa-search"></i>
+                      </a>
+                      <a href="http://google.com" target="_self">
+                      <i class="fa fa-link"></i>
+                      </a>
+                      <img src="images/portfolio/portfolio4.jpg" alt="">
+               </div>
+            </div>
+			<!-- END PORTFOLIO -->
+            <!-- BEGIN PORTFOLIO -->
+            <!--<div class="portfolio-item services products cad">
+               <div class="portfolio">
+                  <div class="img-overlay"></div><a href="images/portfolio/portfolio5.jpg" class="portfolio-image fancybox">
+                      <i class="fa fa-search"></i> </a>
+                      <a href="http://google.com" target="_self">
+                      <i class="fa fa-link"></i>
+                      </a>
+                      <img src="images/portfolio/portfolio5.jpg" alt="">
+               </div>
+            </div>
+			<!-- END PORTFOLIO -->
+            <!-- BEGIN PORTFOLIO -->
+            <!--<div class="portfolio-item services products cad fadeInUp">
+               <div class="portfolio">
+                  <div class="img-overlay"></div><a href="images/portfolio/portfolio6.jpg" class="portfolio-image fancybox">
+                      <i class="fa fa-search"></i></a>
+                      <a href="http://google.com" target="_self">
+                      <i class="fa fa-link"></i>
+                  	  </a>
+                      <img src="images/portfolio/portfolio6.jpg" alt="">
+               </div>
+            </div>
+			<!-- END PORTFOLIO -->
+            <!-- BEGIN PORTFOLIO -->
+            <!--<div class="portfolio-item products">
+               <div class="portfolio">
+                  <div class="img-overlay"></div><a href="images/product/googleapp.jpg" class="portfolio-image fancybox">
+                      <i class="fa fa-search"></i></a>
+                      <a href="http://google.com" target="_self">
+                      <i class="fa fa-link"></i>
+                  	  </a>
+                      <img src="images/product/googleapp.jpg" alt="">
+               </div>
+            </div>
+			<!-- END PORTFOLIO -->
+            <!-- BEGIN PORTFOLIO -->
+            <!--<div class="portfolio-item services products cad">
+               <div class="portfolio">
+                  <div class="img-overlay"></div><a href="images/portfolio/portfolio8.jpg" class="portfolio-image fancybox">
+                      <i class="fa fa-search"></i></a>
+                      <a href="http://google.com" target="_blank">
+                      <i class="fa fa-link"></i>
+                    </a>
+                      <img src="images/portfolio/portfolio8.jpg" alt="">
+               </div>
+            </div>
+            <!-- END PORTFOLIO -->
+			<!-- BEGIN PORTFOLIO -->
+            <!--<div class="portfolio-item services products cad">
+               <div class="portfolio">
+                  <div class="img-overlay"></div><a href="images/portfolio/portfolio8.jpg" class="portfolio-image fancybox">
+                      <i class="fa fa-search"></i></a>
+                      <a href="http://google.com" target="_blank">
+                      <i class="fa fa-link"></i>
+                    </a>
+                      <img src="images/portfolio/portfolio8.jpg" alt="">
+               </div>
+            </div>
+            <!-- END PORTFOLIO -->
+			<!-- BEGIN PORTFOLIO -->
+            <div class="portfolio-item products">
+               <div class="portfolio">
+                  <div class="img-overlay"></div><a href="images/product/system-devlop.jpg" class="portfolio-image fancybox">
+                      <i class="fa fa-search"></i></a>
+                      <a href="system_development.html" target="_self">
+                      <i class="fa fa-link"></i>
+                    </a>
+                      <img src="images/product/system-devlop.jpg" alt="">
+               </div>
+            </div>
+            <!-- END PORTFOLIO -->
+			<!-- BEGIN PORTFOLIO -->
+            <div class="portfolio-item services">
+               <div class="portfolio">
+                  <div class="img-overlay"></div><a href="images/product/it-solution.jpg" class="portfolio-image fancybox">
+                      <i class="fa fa-search"></i></a>
+                      <a href="it_infra_service.html" target="_self">
+                      <i class="fa fa-link"></i>
+                    </a>
+                      <img src="images/product/it-solution.jpg" alt="">
+               </div>
+            </div>
+            <!-- END PORTFOLIO -->
+			<!-- BEGIN PORTFOLIO -->
+            <div class="portfolio-item cad">
+               <div class="portfolio">
+                  <div class="img-overlay"></div><a href="images/product/catia.jpg" class="portfolio-image fancybox">
+                      <i class="fa fa-search"></i></a>
+                      <a href="overview.html" target="_self">
+                      <i class="fa fa-link"></i>
+                    </a>
+                      <img src="images/product/catia.jpg" alt="">
+               </div>
+            </div>
+            <!-- END PORTFOLIO -->
+           </div>
+
+    </section>
+    <!-- END TABLES CONTAINER -->
+    <!-- Start Newsletter Block
+	================================================== -->
+	<section id="newsslider" class="sectionnews">
+		<div class="container">
+			<div class="row">
+				<div class="col-md-12">
+					<div id="Carousel" class="carouselnews slide">
+					       <!-- <ol class="carouselnews-indicators">
+					            <li data-target="#Carousel" data-slide-to="0" class="active"></li>
+					            <li data-target="#Carousel" data-slide-to="1" ></li>
+					            <li data-target="#Carousel" data-slide-to="2" ></li>
+					        </ol>-->
+					
+					        <div class="carouselnews-inner">
+								<div class="item animate" data-animate="flipInY">
+					           		<blockquote>
+						             	<p class="lead">JM Technology Indonesia is established in Jakarta.</p>
+						             	<small>Mar 1, 2012 <cite title="Source Title"></cite></small>
+					             	</blockquote>
+					            </div>
+					            <div class="item active animate" data-animate="flipInY">
+					                <blockquote>
+					                  <p class="lead">JMTI starts IT services for companies in Indonesia.</p>
+					                  <small>April, 2015 <cite title="Source Title"></cite></small>
+					                </blockquote>					            </div>
+					           <div class="item animate" data-animate="flipInY">
+					             	<blockquote>
+					             	  <p class="lead">JMTI starts 3D CAD(CATIA) Training service in Indonesia.</p>
+					             	  <small>June, 2015<cite title="Source Title"></cite></small>
+					             	</blockquote>
+					           </div>
+					        </div>
+					
+					        <a class="carouselnews-control" href="#Carousel" data-slide="prev">
+					            <span class="glyphicon glyphicon-chevron-left"></span>
+					        </a>
+					        <a class="right carouselnews-control" href="#Carousel" data-slide="next">
+					            <span class="glyphicon glyphicon-chevron-right"></span>
+					        </a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+	<!-- ==================================================
+	End Slider Blcok -->
+    
+    <!-- BEGIN TABLES CONTAINER -->
+    <!--<section class="tables" data-stellar-background-ratio="-0.2" id="pricing-tables">
+        <div class="overlay"></div>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-3 fadeInUp" data-delay="200">
+                	<!-- BEGIN TABLE -->
+                  <!--  <div class="table yellow-table text-center">
+                        <span class="table-heading">basic</span>
+                        <p class="price"><span class="currency">$</span><span><strong>29</strong>.99</span>/ monthly plan</p>
+                        <ul class="list-unstyled">
+                            <li>Theme Update</li>
+                            <li>Most Wanted</li>
+                            <li>Layerd Photoshop PSD</li>
+                            <li>5 e-mail Account</li>
+                            <li>70MB Monthly Traffic</li>
+                            <li>24/7 Live Support</li>
+                        </ul>
+                        <a class="btn btn-yellow" href="#.">Sign UP</a>
+                    </div>
+                	<!-- END TABLE -->
+             <!--   </div>
+              <!--  <div class="col-md-3 fadeInUp" data-delay="200">
+                	<!-- BEGIN TABLE -->
+                 <!--   <div class="table green-table text-center">
+                        <span class="table-heading">standard</span>
+                        <p class="price"><span class="currency">$</span><span><strong>39</strong>.99</span>/ monthly plan</p>
+                        <ul class="list-unstyled">
+                            <li>Theme Update</li>
+                            <li>Most Wanted</li>
+                            <li>Layerd Photoshop PSD</li>
+                            <li>5 e-mail Account</li>
+                            <li>70MB Monthly Traffic</li>
+                            <li>24/7 Live Support</li>
+                        </ul>
+                        <a class="btn btn-green" href="#.">Sign UP</a>
+                    </div>
+                    <!-- END TABLE -->
+             <!--   </div>
+                <div class="col-md-3 fadeInUp" data-delay="600">
+                	<!-- BEGIN TABLE -->
+          <!--          <div class="table blue-table text-center">
+                        <span class="table-heading">professional</span>
+                        <p class="price"><span class="currency">$</span><span><strong>59</strong>.99</span>/ monthly plan</p>
+                        <ul class="list-unstyled">
+                            <li>Theme Update</li>
+                            <li>Most Wanted</li>
+                            <li>Layerd Photoshop PSD</li>
+                            <li>5 e-mail Account</li>
+                            <li>70MB Monthly Traffic</li>
+                            <li>24/7 Live Support</li>
+                        </ul>
+                        <a class="btn btn-blue" href="#.">Sign UP</a>
+                    </div>
+                    <!-- END TABLE -->
+          <!--      </div>
+                <div class="col-md-3 fadeInUp" data-delay="800">
+                	<!-- BEGIN TABLE -->
+          <!--          <div class="table red-table text-center">
+                        <span class="table-heading">extreme</span>
+                        <p class="price"><span class="currency">$</span><span><strong>79</strong>.99</span>/ monthly plan</p>
+                        <ul class="list-unstyled">
+                            <li>Theme Update</li>
+                            <li>Most Wanted</li>
+                            <li>Layerd Photoshop PSD</li>
+                            <li>5 e-mail Account</li>
+                            <li>70MB Monthly Traffic</li>
+                            <li>24/7 Live Support</li>
+                        </ul>
+                        <a class="btn btn-red" href="#.">Sign UP</a>
+                    </div>
+                    <!-- END TABLE -->
+           <!--     </div>
             </div>
         </div>
-    </div>
-    <div class="container" style="border: 0px solid #000; width: 100%; height: 90%">
-        <div id="tp_div_video" style="border: 0px solid #000; width: 100%; height: 100%">
-            <div id="divVideoRemote" style="border: 0px solid #000; height: 100%; width: 100%">
-                <video class="video" width="100%" height="100%" id="tp_video_remote" autoplay style="opacity: 0; background-color: #ffffff; ">
-                </video>
+            </section>
+	<!-- END TABLES CONTAINER -->
+	 <!-- BEGIN OUR CLIENTS CONTAINER -->
+    <section class="our-clients" data-stellar-background-ratio="-0.2" id = "companyprofile">
+    	<div class="overlay"></div>
+        	<div class="container">
+            	<div class="row">
+                	<div class="col-md-12">
+                    	<!-- BEGIN HEADING -->
+                    	<!--<h2 class="orange text-center"> Company Profile</h2>-->
+                        <!-- END HEADING -->
+                        <div id="carousel-example-generic">
+
+                          <!-- Wrapper for slides -->
+                          <div class="carousel-inner text-center">
+                            <div class="item active">
+                              <!-- BEGIN TESTIMONIALS -->
+                              <div class="testimonial">
+                              <i class="fa fa-quote-left"></i>
+                              	<p><h2 class="orange text-center"> Company Profile</h2><hr>
+									<TABLE class="text-left" style="WIDTH: 690px" border=0 cellSpacing=0 cellPadding=0 width="690" background="">
+											
+											<TR>
+												<TD style="PADDING-BOTTOM: 0px; PADDING-LEFT: 0px; PADDING-RIGHT: 0px; PADDING-TOP: 0px" width="10"><IMG src="images/common/subtitle_dot.gif" width="10" height="1"></TD>
+												<TD style="PADDING-BOTTOM: 0px; PADDING-LEFT: 0px; PADDING-RIGHT: 0px; PADDING-TOP: 0px" colSpan=2>　</TD></TR>
+											<TR>
+												<TD style="PADDING-BOTTOM: 0px; PADDING-LEFT: 0px; PADDING-RIGHT: 0px; PADDING-TOP: 0px" width="10">　</TD>
+												<TD style="PADDING-BOTTOM: 0px; PADDING-LEFT: 0px; PADDING-RIGHT: 0px; PADDING-TOP: 0px" class="MS10_sky" vAlign=top width="210">Name</TD>
+												<TD style="PADDING-BOTTOM: 0px; PADDING-LEFT: 0px; PADDING-RIGHT: 0px; PADDING-TOP: 0px" class="MS10_blk" vAlign=top>
+													<P>JM Technology Indonesia</P>
+												<P>(Registered as PT JMT Indonesia)<br>
+												<P>A subsidiary of <a href="http://www.jmtech.co.jp/">JM Technology, Inc. (Japan)</a></P>
+												</TD></TR></TABLE>
+
+										
+									<TABLE class="text-left" style="WIDTH: 690px" border=0 cellSpacing=0 cellPadding=0 width="690" background="">
+
+									<TR>
+									<TD style="PADDING-BOTTOM: 0px; PADDING-LEFT: 0px; PADDING-RIGHT: 0px; PADDING-TOP: 0px" width="10"><IMG src="images/common/subtitle_dot.gif" width="10" height="1"></TD>
+									<TD style="PADDING-BOTTOM: 0px; PADDING-LEFT: 0px; PADDING-RIGHT: 0px; PADDING-TOP: 0px" colSpan=2>　</TD></TR>
+									<TR>
+									<TD style="PADDING-BOTTOM: 0px; PADDING-LEFT: 0px; PADDING-RIGHT: 0px; PADDING-TOP: 0px" width="10">　</TD>
+									<TD style="PADDING-BOTTOM: 0px; PADDING-LEFT: 0px; PADDING-RIGHT: 0px; PADDING-TOP: 0px" class="MS10_sky" vAlign=top width="210">Overview</TD>
+									<TD style="PADDING-BOTTOM: 0px; PADDING-LEFT: 0px; PADDING-RIGHT: 0px; PADDING-TOP: 0px" class="MS10_blk" vAlign=top>
+									<P>JM Technology Indonesia focuses on leading edge IT technologies such as smartphones. JM Technology Indonesia is a part of JM Technology, Inc. (Japan) global company, which delivers technology solutions in semiconductor technology services as well as IT infrastructure, software design and development.</P></TD></TR></TABLE>
+
+									<TABLE class="text-left"border=0 cellSpacing=0 cellPadding=0 width="690">
+											
+											<TR>
+												<TD width="10"><IMG src="images/common/subtitle_dot.gif" width="10" height="1"></TD>
+												<TD colSpan=2>　</TD></TR>
+											<TR>
+												<TD width="10">　</TD>
+												<TD class="MS10_sky" vAlign=top width="210">Address</TD>
+												<TD vAlign=top><SPAN class=MS10_red><p>Sovereign Plaza 6th Floor</span>&nbsp&nbsp&nbsp<A href="https://www.google.co.id/maps/place/Sovereign+Plaza,+Jl.+Tahi+Bonar+Simatupang,+Cilandak,+Kota+Jkt+Sel.,+Daerah+Khusus+Ibukota+Jkt+12430/@-6.2930045,106.8030083,17z/data=!3m1!4b1!4m2!3m1!1s0x2e69f1e4f62c0bf5:0xd3e1c01edc3f6d5" target="_blank">&gt;&gt;map</A>
+												<BR>Jl. TB Simatupang Kav. 36, Jakarta 12430<BR>TEL (021) 2940-0239 FAX (021) 2940-0238</SPAN></p></TD></TR></TABLE>
+
+									<TABLE class="text-left" border=0 cellSpacing=0 cellPadding=0 width="690">
+
+									<TR>
+									<TD width="10"><IMG src="images/common/subtitle_dot.gif" width="10" height="1"></TD>
+									<TD colSpan=2>　</TD></TR>
+									<TR>
+									<TD width="10">　</TD>
+									<TD class="MS10_sky" vAlign=top width="210">Global Locations<br>(JM Technology, Inc.)</TD>
+										<TD vAlign=top><SPAN class=MS10_red><p>Fukuoka HQ</SPAN>　 <A href="https://www.google.co.id/maps/place/Fukuoka+Asian+Art+Museum/@33.595086,130.405818,18z/data=!3m1!4b1!4m2!3m1!1s0x354191eb557a0f8d:0x6c0abf9a3079bc98" target="_blank">&gt;&gt;map</A><BR><SPAN class=MS10_blk>9F Riverain Bldg., 3-1 Shimokawabata-machi, Hakata-ku, Fukuoka-shi, Fukuoka 812-0027 Japan<BR>TEL 092-272-4151　　FAX 092-272-4155</SPAN></p></TD></TR></TABLE>
+									<TABLE class="text-left" border=0 cellSpacing=0 cellPadding=0 width="690">
+
+									<TR>
+									<TD colSpan=3>　</TD></TR>
+									<TR>
+									<TD width="10">　</TD>
+									<TD vAlign=top width="210">　</TD>
+										<TD vAlign=top><SPAN class=MS10_red><p>Tokyo HQ</SPAN>　 <A class="L_s_DarkBlue" onclick="MM_openBrWindow('../maps/m_map_shinjyuku/index.html','map','width=700,height=384')" href="javascript:void(0);">&gt;&gt;map</A> <BR><SPAN class=MS10_blk>26F, Odakyu-Daiichi-Seimei Bldng., 2-7-1, Nishinjuku, Shinjuku-ku, Tokyo.<BR>TEL 03-6826-8749  FAX 03-4589-9000</SPAN></p></TD></TR></TABLE>
+									<TABLE class="text-left" border=0 cellSpacing=0 cellPadding=0 width="690">
+
+									<TR>
+									<TD colSpan=3>　</TD></TR>
+									<TR>
+									<TD width="10">　</TD>
+									<TD vAlign=top width="210">　</TD>
+										<TD vAlign=top><SPAN class=MS10_red><p>Osaka</SPAN>　 <A class="L_s_DarkBlue" onclick="MM_openBrWindow('../maps/m_map_osaka/index.html','map','width=700,height=384')" href="javascript:void(0);">&gt;&gt;map</A><BR><SPAN class=MS10_blk>4F Sumikinkousan Shin-Osaka Bldg., 5-3-8 Nishi-Nakajima, Yodogawa-ku, Osaka 532-0011 Japan<BR>TEL 06-6101-1660　　FAX&nbsp;06-6101-1661</SPAN></p></TD></TR></TABLE>
+									<!--<TABLE class="text-left"border=0 cellSpacing=0 cellPadding=0 width="690">
+
+									<TR>
+									<TD colSpan=3>　</TD></TR>
+									<TR>
+									<TD width="10">　</TD>
+									<TD vAlign=top width="210">　</TD>
+										<TD vAlign=top><SPAN class=MS10_red><p>Hiroshima</SPAN>　 <A class="L_s_DarkBlue" onclick="MM_openBrWindow('../m_map_hiroshima','map','width=700,height=384')" href="javascript:void(0);">&gt;&gt;map</A><BR><SPAN class=MS10_blk>3F Sogo Fudosan Bldg., 5-5 Saijo Kamiichi-cho, Higashi-Hiroshima-shi, Hiroshima-ken 739-0006 Japan<BR></SPAN><SPAN class=MS10_blk>TEL 082-493-7801&nbsp;FAX 082-493-7802</SPAN></p></TD></TR></TABLE>-->
+									<TABLE class="text-left" border=0 cellSpacing=0 cellPadding=0 width="690">
+
+									<TR>
+									<TD colSpan=3>　</TD></TR>
+									<TR>
+									<TD width="10">　</TD>
+									<TD vAlign=top width="210">　</TD>
+									<TD vAlign=top><SPAN class=MS10_red><p>Yokkaichi　 <A class="L_s_DarkBlue" onclick="MM_openBrWindow('../maps/m_map_yokkaichi/index.html','map','width=700,height=384')" href="javascript:void(0);">&gt;&gt;map</A></SPAN><BR><SPAN class=MS10_blk>B Room 7F KOSCO Yakkaichi-shi Nshiura Bldg.,1-5-10, Yokkaichi-shi<BR></SPAN><SPAN class=MS10_blk>TEL 059-373-5170&nbsp;FAX 059-373-5170<BR><FONT color=#999999 size=1></FONT></SPAN></p></TD></TR></TABLE>
+
+									<!--<TABLE class="text-left" border=0 cellSpacing=0 cellPadding=0 width="690">
+
+									<TR>
+									<TD width="10"></TD>
+									<TD colSpan=2>　</TD></TR>
+									<TR>
+									<TD width="10">　</TD>
+									<TD class="MS10_sky" vAlign=top width="210"></TD>
+									<TD vAlign=top><SPAN class=MS10_red><p>Singapore (<A href="http://www.jms.sg/" target="_blank">JM Singapore IT Solutions Pte Ltd)<BR></A></SPAN><SPAN class=MS10_blk>138 Robinson Road #16-03 The Corporate Office Singapore 068906<BR>TEL ＋65-6221-3781&nbsp;FAX ＋65-6225-1175</SPAN></p></TD></TR></TABLE>-->
+									<TABLE class="text-left" border=0 cellSpacing=0 cellPadding=0 width="690">
+
+									<TR>
+									<TD width="10"><IMG src="images/common/subtitle_dot.gif" width="10" height="1"></TD>
+									<TD colSpan=2>　</TD></TR>
+									<TR>
+									<TD width="10">　</TD>
+									<TD class="MS10_sky" vAlign=top width="210">Group Companies<br>(Mamezo)</TD>
+									<TD vAlign=top>
+									<P><SPAN class=MS10_red><A href="http://www.mamezou-hd.com/" target="_blank">Mamezou Holdings Co.,Ltd.</A><BR><A href="http://www.mamezou.com/" target="_blank">Mamezou Co.,Ltd.</A><BR><A href="http://www.opst.co.jp/" target="_blank">Open Stream, Inc.</A><BR><A href="http://www.nextscape.net/index.html" target="_blank">NextScape, Inc.</A><BR><A href="http://www.foster-net.co.jp/" target="_blank">Fosternet Co.,Ltd. </A><BR><A href="http://mamezou-shanghai.com/" target="_blank">Mamezou Shanghai</A><BR><A href="http://www.menox.co.jp" target="_blank">MENOX Co.,Ltd</A><BR><A href="http://www.dm-tec.co.jp" target="_blank">DM Co, Ltd</A></SPAN><SPAN class=MS10_red></P></SPAN></TD></TR></TABLE></TD></TR></TABLE>
+									<DIV></DIV><MAP name=Map><AREA title=採用情報 href="../recruit/index.html" shape=RECT alt="採用情報" coords=547,6,632,32><AREA title=IR情報 href="../ir/index.html" shape=RECT alt="IR情報" coords=457,6,542,32><AREA title=トピックス href="../topics/index.html" shape=RECT alt="トピックス" coords=369,6,454,32><AREA title=製品・サービス href="../prodserv/index.html" shape=RECT alt="製品・サービス" coords=268,6,365,32><AREA title=企業情報 href="index.html" shape=RECT alt="企業情報" coords=169,6,266,32></MAP></td></tr>
+									</table>
+									</td></tr>
+									</table>
+									</td></tr></table>
+									</td></tr></table></p>
+							<i class="fa fa-quote-right"></i>
+                              </div>
+                              <!-- END TESTIMONIALS -->
+                            </div>
+							
+							
+                            <div class="item">
+                              <!-- BEGIN TESTIMONIALS VISION -->
+                              <div class="testimonial">
+                              	<i class="fa fa-quote-left"></i>
+                              	<p><h2 class="orange text-center"> Vision</h2><hr>
+							<TABLE class="text-left" style="WIDTH: 700px" border=0 cellSpacing=0 cellPadding=0 width="700" background="">
+
+							<TR>
+							<TD style="PADDING-BOTTOM: 0px; PADDING-LEFT: 0px; PADDING-RIGHT: 0px; PADDING-TOP: 0px" width="10"><IMG src="images/common/subtitle_dot.gif" width="10" height="1"></TD>
+							<TD style="PADDING-BOTTOM: 0px; PADDING-LEFT: 0px; PADDING-RIGHT: 0px; PADDING-TOP: 0px" colSpan=2>　</TD></TR>
+							<TR>
+							<TD style="PADDING-BOTTOM: 0px; PADDING-LEFT: 0px; PADDING-RIGHT: 0px; PADDING-TOP: 0px" width="10">　</TD>
+							<TD style="PADDING-BOTTOM: 0px; PADDING-LEFT: 0px; PADDING-RIGHT: 0px; PADDING-TOP: 0px" class="MS10_blk" vAlign=top width="210"><STRONG>Management Principles</STRONG> </TD>
+							<TD style="PADDING-BOTTOM: 0px; PADDING-LEFT: 0px; PADDING-RIGHT: 0px; PADDING-TOP: 0px" class="MS10_blk" vAlign=top><p>From Fukuoka to Asia to the World.<BR>Contributing to the development of a creative and hopeful information society by providing state-of-art technology solutions.<BR></p></TD></TR></TABLE>
+							<TABLE class="text-left" style="WIDTH: 700px" border=0 cellSpacing=0 cellPadding=0 width="700" background="">
+
+							<TR>
+							<TD style="PADDING-BOTTOM: 0px; PADDING-LEFT: 0px; PADDING-RIGHT: 0px; PADDING-TOP: 0px" width="10"><IMG src="images/common/subtitle_dot.gif" width="10" height="1"></TD>
+							<TD style="PADDING-BOTTOM: 0px; PADDING-LEFT: 0px; PADDING-RIGHT: 0px; PADDING-TOP: 0px" colSpan=2>　</TD></TR>
+							<TR>
+							<TD style="PADDING-BOTTOM: 0px; PADDING-LEFT: 0px; PADDING-RIGHT: 0px; PADDING-TOP: 0px" width="10">　</TD>
+							<TD style="PADDING-BOTTOM: 0px; PADDING-LEFT: 0px; PADDING-RIGHT: 0px; PADDING-TOP: 0px" class="MS10_blk" vAlign=top width="210"><STRONG>Business Policy</STRONG></TD>
+								<TD style="PADDING-BOTTOM: 0px; PADDING-LEFT: 0px; PADDING-RIGHT: 0px; PADDING-TOP: 0px" class="MS10_blk" vAlign=top><p>Our goal is to be a technology solution company that develops new values in partnership with customers, business partners, our employees and local communities, remaining responsive to our ever-changing information society.<BR>
+									Today's information society is dynamic and changes continuously.
+									<BR><BR></p></TD></TR></TABLE>
+							<TABLE class="text-left" style="WIDTH: 700px" border=0 cellSpacing=0 cellPadding=0 width="700" background="">
+
+							<TR>
+							<TD style="PADDING-BOTTOM: 0px; PADDING-LEFT: 0px; PADDING-RIGHT: 0px; PADDING-TOP: 0px" width="10">　</TD>
+							<TD style="PADDING-BOTTOM: 0px; PADDING-LEFT: 0px; PADDING-RIGHT: 0px; PADDING-TOP: 0px" class="MS10_blk" vAlign=top background="" colSpan=2 align=left><p>Based on our company's policy of adhering to joint creation in the development of new values, we will commit to the development/growth of customers, business partners, our employees and local communities through the provision of technology solution services.</p> </TD></TR>
+							<TR>
+							<TD style="PADDING-BOTTOM: 0px; PADDING-LEFT: 0px; PADDING-RIGHT: 0px; PADDING-TOP: 0px">　</TD>
+							<TD style="PADDING-BOTTOM: 0px; PADDING-LEFT: 0px; PADDING-RIGHT: 0px; PADDING-TOP: 0px" class="MS10_sky" vAlign=top colSpan=2>&nbsp;</TD></TR>
+							<TR>
+							<TD style="PADDING-BOTTOM: 0px; PADDING-LEFT: 0px; PADDING-RIGHT: 0px; PADDING-TOP: 0px" width="10">　</TD>
+							<TD style="PADDING-BOTTOM: 0px; PADDING-LEFT: 0px; PADDING-RIGHT: 0px; PADDING-TOP: 0px" class="MS10_blk" vAlign=top background="" colSpan=2 align=left>1) Joint creation with customers</TD></TR>
+							<TR>
+							<TD style="PADDING-BOTTOM: 0px; PADDING-LEFT: 0px; PADDING-RIGHT: 0px; PADDING-TOP: 0px">　</TD>
+							<TD style="PADDING-BOTTOM: 0px; PADDING-LEFT: 0px; PADDING-RIGHT: 0px; PADDING-TOP: 0px" class="MS10_blk" vAlign=top colSpan=2><p>We will develop structures and systems to be followed in the process of joint value creation while providing high-quality technology solution services.<BR><BR></p></TD></TR>
+							<TR>
+							<TD style="PADDING-BOTTOM: 0px; PADDING-LEFT: 0px; PADDING-RIGHT: 0px; PADDING-TOP: 0px" width="10">　</TD>
+							<TD style="PADDING-BOTTOM: 0px; PADDING-LEFT: 0px; PADDING-RIGHT: 0px; PADDING-TOP: 0px" class="MS10_blk" vAlign=top background="" colSpan=2 align=left>2) Joint creation with business partners</TD></TR>
+							<TR>
+							<TD style="PADDING-BOTTOM: 0px; PADDING-LEFT: 0px; PADDING-RIGHT: 0px; PADDING-TOP: 0px">　</TD>
+							<TD style="PADDING-BOTTOM: 0px; PADDING-LEFT: 0px; PADDING-RIGHT: 0px; PADDING-TOP: 0px" class="MS10_blk" vAlign=top colSpan=2><p>We will strengthen the partnership with our business partners following the concept that partners are essential structural components in joint value creation.<BR><BR></p></TD></TR>
+							<TR>
+							<TD style="PADDING-BOTTOM: 0px; PADDING-LEFT: 0px; PADDING-RIGHT: 0px; PADDING-TOP: 0px" width="10">　</TD>
+							<TD style="PADDING-BOTTOM: 0px; PADDING-LEFT: 0px; PADDING-RIGHT: 0px; PADDING-TOP: 0px" class="MS10_blk" vAlign=top background="" colSpan=2 align=left>	3) Joint creation with our employees</TD></TR>
+							<TR>
+							<TD style="PADDING-BOTTOM: 0px; PADDING-LEFT: 0px; PADDING-RIGHT: 0px; PADDING-TOP: 0px" width="10">　</TD>
+							<TD style="PADDING-BOTTOM: 0px; PADDING-LEFT: 0px; PADDING-RIGHT: 0px; PADDING-TOP: 0px" class="MS10_blk" vAlign=top background="" colSpan=2 align=left><p>Based on our belief that the development of human resources is part of our company's mission, we have a goal to invest in our employees while, at the same time, help the company grow.<BR><BR></p></TD></TR>
+							<TR>
+							<TD style="PADDING-BOTTOM: 0px; PADDING-LEFT: 0px; PADDING-RIGHT: 0px; PADDING-TOP: 0px" width="10">&nbsp;</TD>
+							<TD style="PADDING-BOTTOM: 0px; PADDING-LEFT: 0px; PADDING-RIGHT: 0px; PADDING-TOP: 0px" class="MS10_blk" vAlign=top background="" colSpan=2 align=left>4) Joint creation with local communities</TD></TR>
+							<TR>
+							<TD style="PADDING-BOTTOM: 0px; PADDING-LEFT: 0px; PADDING-RIGHT: 0px; PADDING-TOP: 0px" width="10">&nbsp;</TD>
+							<TD style="PADDING-BOTTOM: 0px; PADDING-LEFT: 0px; PADDING-RIGHT: 0px; PADDING-TOP: 0px" class="MS10_blk" vAlign=top background="" colSpan=2 align=left><p>Focusing on a goal of enhancing our company's corporate reputation, we will contribute to the development of local communities.<BR><BR></p></TD></TR></TABLE>
+							
+							<IMG src="images/common/subtitle_dot.gif" width="10" height="1" align="left"></br>
+							
+							<p class="text-left"><b>Guiding Principles</b></br> 
+							Sincere, honest promises.</br>
+							Ensure responsibility in all endeavors.</br>
+							Make fair and balanced judgments.</br>
+							Courteous and well-mannered.</br>
+							</p>
+							<i class="fa fa-quote-right"></i>
+                              </div>
+                              <!-- END TESTIMONIALS -->
+                            </div>
+							
+							
+                            <div class="item">
+                              <!-- BEGIN TESTIMONIALS HISTORY -->
+                              <div class="testimonial">
+                              	<i class="fa fa-quote-left"></i>
+                              	<p><h2 class="orange text-center"> History</h2><hr>
+										<TABLE class="text-left" border=0 cellSpacing=0 cellPadding=0 width="100%">
+
+										<TR>
+										<TD width="10">&nbsp;</TD>
+										<TD colSpan=2>&nbsp;</TD></TR>
+
+
+											<tr>
+												<td
+													class="gray_12"
+													valign="top"
+													width="10">&nbsp;</td>
+												<td
+													class="MS10_blk"
+													height="30"
+													valign="top"
+													width="120">March
+													1995</td>
+												<td
+													class="MS10_blk"
+													height="30"
+													valign="top"
+													width="390">
+													<p>JMNet (which later changed name to JM Technology) was
+													established in
+													Osaka (Japan)<br>
+													</p>
+												</td>
+											</tr>
+											<tr>
+												<td
+													class="gray_12"
+													valign="top"
+													width="10">&nbsp;</td>
+												<td
+													class="MS10_blk"
+													height="30"
+													valign="top"
+													width="60">July
+													1999</td>
+												<td
+													class="MS10_blk"
+													height="30"
+													valign="top"
+													width="390"><p>JMNet's Fukuoka (Japan) office was
+													established<br></p>
+												</td>
+											</tr>
+											<tr>
+												<td
+													class="gray_12"
+													valign="top"
+													width="10">&nbsp;</td>
+												<td
+													class="MS10_blk"
+													height="30"
+													valign="top"
+													width="60">March
+													2000</td>
+												<td
+													class="MS10_blk"
+													height="30"
+													valign="top"
+													width="390">
+													<p>JMNet's Tokyo (Japan)
+													office was
+													established <br>
+													</p>
+												</td>
+											</tr>
+											<tr>
+												<td
+													class="gray_12"
+													valign="top"
+													width="10">&nbsp;</td>
+												<td
+													class="MS10_blk"
+													height="30"
+													valign="top"
+													width="60">November
+													2001</td>
+												<td
+													class="MS10_blk"
+													height="30"
+													valign="top"
+													width="390">
+													<p>JMNet's headquarter
+													was moved from
+													Osaka to
+													Fukuoka (Japan) </p>
+												</td>
+											</tr>
+											<tr>
+												<td
+													class="gray_12"
+													valign="top"
+													width="10">&nbsp;</td>
+												<td
+													class="MS10_blk"
+													height="30"
+													valign="top"
+													width="60">November
+													2004</td>
+												<td
+													class="MS10_blk"
+													height="30"
+													valign="top"
+													width="390"><p>JMNet is listed
+													at Fukuoka
+													Stock
+													Exchange's
+													Q-Board (Japan) </p></td>
+											</tr>
+											<tr>
+												<td
+													class="gray_12"
+													valign="top">&nbsp;</td>
+												<td
+													class="MS10_blk"
+													height="30"
+													valign="top">March
+													2007</td>
+												<td
+													class="MS10_blk"
+													height="30"
+													valign="top">
+													<p>JMNet changed
+													name to JM
+													Technology<br>
+													<br>
+													</p>
+												</td>
+											</tr>
+											<tr>
+												<td
+													class="gray_12"
+													valign="top">&nbsp;</td>
+												<td
+													class="MS10_blk"
+													height="30"
+													valign="top">March
+													2009</td>
+												<td
+													class="MS10_blk"
+													height="30"
+													valign="top"><p>JM Technology's Tokyo office became Tokyo Headquarter (Japan)<br></p>
+												</td>
+											</tr>
+											<tr>
+												<td
+													class="gray_12"
+													valign="top">&nbsp;</td>
+												<td
+													class="MS10_blk"
+													height="30"
+													valign="top">May
+													2010</td>
+												<td
+													class="MS10_blk"
+													height="30"
+													valign="top"><p>JM Technology's Singapore
+													subsidiary (JM
+													Singapore IT
+													Solutions) was
+													established<br></p>
+												</td>
+											</tr>
+											<tr>
+												<td
+													class="gray_12"
+													valign="top">&nbsp;</td>
+												<td
+													class="MS10_blk"
+													height="30"
+													valign="top">November
+													2011</td>
+												<td
+													class="MS10_blk"
+													height="30"
+													valign="top"><p>JM Technology joined
+													
+													Mamezou OS
+													Holdings group
+													<br></p>
+												</td>
+											</tr>
+											<tr>
+												<td
+													class="gray_12"
+													valign="top">&nbsp;</td>
+												<td
+													class="MS10_blk"
+													height="30"
+													valign="top">March
+													2012</td>
+												<td
+													class="MS10_blk"
+													height="30"
+													valign="top"><p>JM
+													Technology
+													Indonesia
+													started (registered as
+													PT JMT
+													Indonesia)<br></p>
+												</td>
+											</tr>
+
+
+
+										</TABLE><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR></TD></TR></TABLE></p>
+							<i class="fa fa-quote-right"></i>
+                              </div>
+                              <!-- END TESTIMONIALS -->
+                            </div>
+                            <!--  <div class="item">
+                              <!-- BEGIN TESTIMONIALS -->
+                           <!-- <div class="testimonial">
+                              	<i class="fa fa-quote-left"></i>
+                              	<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. of Quisque ultricies vestibulum 
+Inventore veritatis et quasi architectos beatae vitae dicta sunt explicabo molestie. 
+Graphic Design the power of Suspendisse potenti.</p>
+							<i class="fa fa-quote-right"></i>
+                              </div>-->
+                              <!-- END TESTIMONIALS -->
+                            <!-- </div> -->
+                          </div>
+                          
+                          <!-- Indicators -->
+                          <ol class="carousel-indicators">
+                            <li data-target="#carousel-example-generic" data-slide-to="0" class="active">
+                            	<!--<img src="images/cp-thumb1.jpg" alt="" title="" class="img-circle">-->
+                                <span ><b>Company Profile</b></span>
+                            </li>
+                            <li data-target="#carousel-example-generic" data-slide-to="1">
+                            	<!--<img src="images/cp-thumb2.jpg" alt="" title="" class="img-circle">-->
+                                <span><b>Vision</b></span>
+                            </li>
+                            <li data-target="#carousel-example-generic" data-slide-to="2">
+                            	<!--<img src="images/cp-thumb3.jpg" alt="" title="" class="img-circle">-->
+                                <span><b> History </b></span>
+                            </li>
+                           <!--<li data-target="#carousel-example-generic" data-slide-to="3">
+                            	<img src="images/client4.png" alt="" title="" class="img-circle">
+                                <span><b>Organisation Structure</b></span>
+                            </li>-->
+                          </ol>
+                        
+                        </div>
+
+                    </div>
+                </div>
             </div>
-            <div id="tp_div_video_local" style="border: 0px solid #000">
-                <video class="video" width="88px" height="72px" id="tp_video_local" autoplay muted style="opacity: 0; margin-top: -80px; margin-left: 5px; background-color: #ffffff; ">
-                </video>
+        </section>
+	<!-- END OUR CLIENTS CONTAINER -->
+	
+	<!-- BEGIN EXPERIENCE SECTION -->
+	<section class="no-padding-bottom recruitment" id="recruitment">
+    	<div class="container">
+        	<!-- BEGIN HEADING -->
+        	<h1 class="red text-center">Recruitment<span></span></h1>
+            <!-- END HEADING -->
+            <div class="row">
+                <div class="text-left">
+                	<!-- BEGIN EXPERIENCE CONTENT -->
+                	<div class="text-left" data-delay="100">
+						<p>  
+					JM Technology Indonesia (registered legally as PT JMT Indonesia), 
+					a Jakarta-based subsidiary of Japan's JM Technology, Inc, and a part of 
+					Mamezo Group which is a group company listed on Tokyo Stock Exchange,
+					is an IT solutions provider focusing on leading edge mobile-centric IT 
+					solutions based on Japan's advanced technology and deep knowhow.<BR />
+					
+					We at JM Technology Indonesia leverages high quality Indonesian IT talents
+					and work directly with global engineering teams in Japan and therefore has direct 
+					access to Japanese technology and knowhow as well as the market. <BR />
+					
+					We are making positions available for young, highly skilled and experienced 
+					Indonesian programmers to work at its soon-to-open Jakarta office. 
+					Successful candidates will work closely with multinational engineers
+					in Japan online, as well as by going to Japan on project basis.
+					Successful candidates will have the chance to be assigned to work 
+					at group company office located in prestigious area in Tenjin, Fukuoka
+					as well as in Shinjuku, Tokyo.<BR />
+					
+				<BR />
+				
+				<STRONG>GENERAL REQUIREMENTS</STRONG><BR />
+							Candidate should be skilled and experienced in mobile and/or web development.
+							Candidate should have strong basic knowledge of software engineering, 
+							and therefore is a quick learner of any new software technology.
+							Candidates should be <BR />
+							
+							Candidate should possess inquisitive mind and “can do” attitude, 
+							able to work with full commitment to deliver the  job's target and deadline.
+							Candidates should be self-motivated and able to work well in a team
+							and with minimum supervision.<BR />
+							
+							A working English knowledge is required. Japanese language knowledge
+							is a big plus, and increases the chance to be assigned to work in Japan.<BR />
+				
+					<BR />
+					<BR />
+				<STRONG>SPECIFIC REQUIREMENTS</STRONG><BR />
+<hr>
+				
+									<a name="job1">ASP.NET DEVELOPER</a>
+								
+							
+							
+							
+					<p>This position will be responsible for planning, designing and developing web-based online systems and services.</p>
+								<br />
+								
+								<STRONG>Technical Qualification:</STRONG><br />
+								- 2 years or more real experience in developing web applications<br />
+								- Skilled and experienced with ASP.NET (C#/VB.NET)<br />
+								- Capable to create application and/or DLL components using C#/VB.NET<br />
+								- Familiar with latest web technologies and frameworks (HTML/CSS/JavaScript/jQuery etc)<br />
+								- Knowledgeable in writing and coding SQL statements <br />
+								- Possess good debugging skills and problem solving skills<br />
+								- Able to read and comprehend open source projects<br />
+								- Skill of other programming languages is a plus (PHP, Java, C/C++, Ruby on Rails, Perl etc)<br />
+								</p>
+								<br />
+							
+							
+							<!--<IMG border=0 alt="新卒採用" src="../var/rev0/0000/5125/welcome2011_02.gif">-->
+						
+						
+    
+    
+</td></tr>
+</table></p>
+    				</div>
+                    <!-- END EXPERIENCE CONTENT -->
+                </div>
+                </div>
+               <!-- <div class="container">
+                	<!-- BEGIN DEVICES -->
+						<!--<ul class="social"><object class="text-center" width="500" height="200" align="center" data="recruit/110426_recruit.swf"></object>
+						</ul>
+	                <!-- <div class="col-md-12 text-center devices bounceInUp" data-delay="100"><img src="images/devices.png" alt=""></div>-->
+                    <!-- END DEVICES -->
+               <!-- </div>-->
+				     	<!-- BEGIN TEAM -->
+                 </div>
+    </section>
+    <!-- END EXPERIENCE SECTION -->
+	
+    <!-- BEGIN CONTACT US CONTAINER -->
+	<!-- <section class="contact-us no-padding-bottom" id="contact-us">
+     <!-- 	<div class="container">
+        	<!-- BEGIN HEADING -->
+     <!--    	<h1 class="orange text-center">Contact us<span>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque ultricies vestibulum.</span></h1>
+            <!-- END HEADING -->
+            
+            <!-- BEGIN THANK YOU MESSAGE -->
+    <!--         <div id="contact_message" class="success-msg">Thank you for contact us.</div>
+            <!-- END THANK YOU MESSAGE -->
+            
+        <!--     <div class="form rollIn">
+            <!-- BEGIN FORM -->
+       <!--      <form id="contact_form" method="post" onSubmit="return false">
+            <div class="row">
+                <div class="col-md-6">
+                    <label>Your Name:</label>
+                    <input type="text" name="name" id="name">
+                </div>
+                <div class="col-md-6">
+                    <label>Email Address:</label>
+                    <input type="text" name="email" id="email">
+                </div>
             </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <label>Company:</label>
+                    <input type="text" name="company" id="company">
+                </div>
+                <div class="col-md-6">
+                    <label>Website:</label>
+                    <input type="text" name="website" id="website">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                	<div class="message">
+                        <label>Message:</label>
+                        <textarea name="message" id="message"></textarea>
+                        <input type="submit" value="submit" class="btn btn-orange" id="btn_submit" onClick="proceed();">
+                    </div>
+                </div>
+            </div>
+            </form>
+            <!-- END FORM -->
+         <!--    </div>
+       <!--  </div>-->
+        <div class="clearfix"></div>
+        <!-- BEGIN MAP -->
+      <!--   <div class="map">
+        	<div class="map-title">
+            	<h4>view map <span><i class="fa fa-angle-down"></i></span></h4>
+            </div>
+            <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d3151.8358376525007!2d144.955431!3d-37.817313999999996!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6ad642c9a8d8495f%3A0xedc33f230d1355b1!2sEnvato+Pty+Ltd!5e0!3m2!1sen!2s!4v1397819044821"></iframe>
         </div>
-    </div>
-    <!-- container -->
-    <!-- Le javascript
-    ================================================== -->
-    <!-- Placed at the end of the document so the pages load faster -->
-    <!-- SIPML5 -->
-    <script src="SIPml-api.js" type="text/javascript"> </script>
-    <!-- ANALYTICS -->
+        <!-- END MAP -->
+   <!--   </section>
+    <!-- END CONTACT US CONTAINER -->
+     
+    <!-- BEGIN FOOTER -->
+    <footer>
+    	<div class="container">
+        	<!-- BEGIN SOCIAL -->
+        	<ul class="social">
+            	<li class="bounceIn" data-delay="0"><a href="https://www.facebook.com/jmtindonesia?fref=ts"><i class="fa fa-facebook"></i></a></li>
+            	<li class="bounceIn" data-delay="100"><a href="https://www.linkedin.com/company/jmtindonesia"><i class="fa fa-linkedin"></i></a></li>
+            </ul>
+            <!-- BEGIN SOCIAL -->
+            <!-- BEGIN COPYRIGHT -->
+            <p class="copyright">Copyrights 2015, JM TECHNOLOGY INDONESIA ALL RIGHTS RESERVED.</p>
+            <!-- END COPYRIGHT -->
+        </div>
+    </footer>        
+    <!-- END FOOTER -->
+    
+    <!-- BEGIN GO TO TOP --><a href="#." class="back-to-top" id="back-to-top"><i class="fa fa-angle-up"></i></a><!-- END GO TO TOP -->
+    
+    </div><!-- end #wrapper -->
+
+
+    <script src="js/jquery.min.js"></script>
+  	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.js"></script>
+	    	
+     <!-- jQuery KenBurn Slider  -->	
+	
+    <script src="js/jquery.themepunch.plugins.min.js"></script>			
+    <script src="js/jquery.themepunch.revolution.min.js"></script>			
+					
+	<!-- parallax -->
+    <script src="js/jquery.stellar.js"></script>
+    <script src="js/custom.js"></script>
+    
+     <!-- jcarousel -->
+    <script src="js/jquery.jcarousel.min.js"></script>
+      <!-- way point -->
+    <script src="js/waypoints.js"></script>
+    
+    	<!-- Add piecharts -->
+	<script src="js/jquery.easypiechart.min.js"></script>
+    <!-- navigation classes change on scroll -->
+	<script src="js/nimble.js"></script>
+    
+    <script src="js/scrollspy.js"></script>
+    <!-- fancybox -->
+    <script src="js/jquery.fancybox.pack.js?v=2.1.5"></script>
+    <!-- appear -->
+    <script src="js/jquery.appear.js"></script>
+    
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="js/bootstrap.min.js"></script>
+    <!-- nimble effect -->
+    
+    <script src="js/counters.js"></script>
+     
+    <script>
+		//slider
+			
+		jQuery(function() {
+
+			//parallaax
+			jQuery.stellar({
+				horizontalScrolling: false,
+				verticalOffset: 0
+			});
+			//fancybox
+			jQuery(".fancybox").fancybox();
+			jQuery(".various").fancybox({
+				maxWidth	: 1100,
+				maxHeight	: 600,
+				fitToView	: false,
+				width		: '70%',
+				height		: '70%',
+				autoSize	: false,
+				closeClick	: false,
+				openEffect	: 'none',
+				closeEffect	: 'none'
+			});
+			
+			jQuery('#mycarousel').jcarousel({
+				vertical: true
+			});
+			
+			//smooth scroll to href value
+			jQuery(".tabs-btn ul li a, .navbar-nav li a, .navbar-brand").click(function(event){
+				 //event.preventDefault();
+				 //calculate destination place
+				 var dest=0;
+				 if(jQuery(this.hash).offset().top > jQuery(document).height()-jQuery(window).height()){
+					  dest=$(document).height()-jQuery(window).height();
+				 }else{
+					  dest=jQuery(this.hash).offset().top;
+				 }
+				 //go to destination
+				 jQuery('html,body').animate({scrollTop:dest}, 1000,'swing');
+			 });
+			 //toggle map
+			 jQuery(".map-title h4 span").click(function(e) {
+              	jQuery(".map iframe").slideToggle();  
+				jQuery(".map-title h4 span i").toggleClass("fa-angle-up fa-angle-down");
+             });
+			 
+			jQuery(window).scroll(function(){
+				if(jQuery(window).scrollTop() > 200){
+					jQuery("#back-to-top").fadeIn(200);
+				} else{
+					jQuery("#back-to-top").fadeOut(200);
+				}
+			});
+			
+			jQuery('#back-to-top, .back-to-top').click(function() {
+				  jQuery('html, body').animate({ scrollTop:0 }, '800');
+				  return false;
+			});
+			 
+			 
+			//pie charts	
+			jQuery('#pie-charts').waypoint(function(direction) {			
+				jQuery('.chart').easyPieChart({
+					 barColor: "#5ecae6",
+					onStep: function(from, to, percent) {
+						jQuery(this.el).find('.percent').text(Math.round(percent));
+					}
+				});
+				}, {
+				offset: function() {
+					return jQuery.waypoints('viewportHeight') - jQuery(this).height() + 100;
+				}
+			});
+			
+			jQuery('#pie-charts').waypoint(function(direction) {			
+				jQuery('.green-circle').easyPieChart({
+					 barColor: "#bed431",
+					onStep: function(from, to, percent) {
+						jQuery(this.el).find('.percent').text(Math.round(percent));
+					}
+				});
+				}, {
+				offset: function() {
+					return jQuery.waypoints('viewportHeight') - jQuery(this).height() + 100;
+				}
+				
+			});
+			
+			jQuery('#pie-charts').waypoint(function(direction) {			
+				jQuery('.red-circle').easyPieChart({
+					 barColor: "#e11e24",
+					onStep: function(from, to, percent) {
+						jQuery(this.el).find('.percent').text(Math.round(percent));
+					}
+				});
+				}, {
+				offset: function() {
+					return jQuery.waypoints('viewportHeight') - jQuery(this).height() + 100;
+				}
+				
+			});
+			
+			jQuery('#pie-charts').waypoint(function(direction) {			
+				jQuery('.yellow-circle').easyPieChart({
+					 barColor: "#f6c715",
+					onStep: function(from, to, percent) {
+						jQuery(this.el).find('.percent').text(Math.round(percent));
+					}
+				});
+				}, {
+				offset: function() {
+					return jQuery.waypoints('viewportHeight') - jQuery(this).height() + 100;
+				}
+				
+			});
+			
+			jQuery('#pie-charts').waypoint(function(direction) {			
+				jQuery('.purple-circle').easyPieChart({
+					 barColor: "#7251a2",
+					onStep: function(from, to, percent) {
+						jQuery(this.el).find('.percent').text(Math.round(percent));
+					}
+				});
+				}, {
+				offset: function() {
+					return jQuery.waypoints('viewportHeight') - jQuery(this).height() + 100;
+				}
+				
+			});
+			
+			});
+			//form submit
+			function checkmail(input)
+			 {
+				var pattern1=/^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/;
+				if(pattern1.test(input)){ return true; }else{ return false; }
+			 }     
+			  function proceed(){
+				 var name = document.getElementById("name");
+				 var email = document.getElementById("email");
+				 var company = document.getElementById("company");
+				 var web = document.getElementById("website");
+				 var msg = document.getElementById("message");
+				 var errors = "";
+				 
+				 if(name.value == "")
+				  { 
+				  name.className = 'error';
+					return false;
+				  }
+					
+				  else if(email.value == "")
+				  {
+					email.className = 'error';
+					return false;
+				  }
+				  else if(checkmail(email.value)==false)
+				  {
+					alert('Please provide a valid email address.');
+					return false;
+			
+				  }
+				  else if(company.value == "")
+				  {
+					company.className = 'error';
+					return false;
+				  }
+					else if(web.value == "")
+				  {
+					web.className = 'error';
+					return false;
+				  }
+				  else if(msg.value == "")
+				  {
+					msg.className = 'error';
+					return false;
+				  }
+				  else 
+					{
+							$.ajax({
+								type: "POST",
+								url: "process.php",
+								data: $("#contact_form").serialize(),
+								success: function(msg)
+								{
+									//alert(msg);
+									if(msg){
+									jQuery('#contact_form').fadeOut(1000);
+									jQuery('#contact_message').fadeIn(2000);
+									document.getElementById("contact_message").innerHTML = "Your email has been sent.";
+									return true;
+									}
+								}
+							});
+					} 
+			  }
+
+		
+	</script>
+    
+ 	<!-- revolution code -->
+    
     <script type="text/javascript">
-	/*
-      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+	
+		var tpj=jQuery;
+		tpj.noConflict();
+		
+		tpj(document).ready(function() {
+		
+		if (tpj.fn.cssOriginal!=undefined)
+			tpj.fn.css = tpj.fn.cssOriginal;
 
-      ga('create', 'UA-6868621-28', 'conf-call.org');
-      ga('send', 'pageview');
-*/
-    </script>
-    <!-- Glass Div -->
-    <div id="tp_div_glass" style="visibility: hidden; z-index: 99; position: fixed; width: 100%;
-        height: 100%; margin: 0; padding: 0; top: 0; left: 0; opacity: 0.8; background-color: Gray">
-    </div>
-    <!-- File Input -->
-    <input type="file" id="tp_file_elem" accept=".ppt,.pttx" style="display:none" onchange="tp.upload_files(this.files);">
-    <!-- Presentation Div -->
-    <div id="tp_div_presentation" class="div-options" style="left: 1391px; top: 46px; visibility: hidden;">
-        <table id="tp_table_0" style="border: 1px solid #000; width: 100%; height: 100%;">
-            <tbody><tr>
-                <td style="white-space: nowrap;" align="center" colspan="2"><label style="width: 100%;" align="center" id="tp_lbl_presname">this_is_myawsome_presentation_with_a_long_name.ppt (100%)</label></td>
-            </tr>
-            <tr>
-                <td align="right">&nbsp;&nbsp;<input type="button" style="background-color:transparent; border: 1px solid #000" id="tp_btn_presentation_prev" value="« prev" onclick="tp.presentation_prev();"></td>
-                <td align="left">&nbsp;&nbsp;<input type="button" style="background-color:transparent; border: 1px solid #000" id="tp_btn_presentation_next" value="next »" onclick="tp.presentation_next();">&nbsp;&nbsp;</td>
-            </tr>
-        </tbody></table>
-    </div>
-    <!-- CallOptions Div -->
-    <div id="tp_div_call_options" class="div-options" style="left: 20px; top: 46px; visibility: hidden;">
-        <table id="tp_table_1" style="border: 0px solid #000; width: 100%; height: 100%;">
-            <tbody><tr>
-                <td><input type="button" style="background-color:transparent; border: 1px solid #000" id="tp_btn_hangup" value="hangup" onclick="tp.hangup();">·</td>
-                <td><input type="button" style="background-color:transparent; border: 1px solid #000" id="tp_btn_fullscreen" value="full screen" onclick="tp.fullscreen(true);">·</td>
-                <td><input type="button" style="background-color:transparent; border: 1px solid #000" id="tp_btn_mute" value="mute" onclick="tp.mute_toggle();">·</td>
-                <td><input type="button" style="background-color:transparent; border: 1px solid #000" id="tp_btn_presentation_toggle" value="share presentation" disabled="" onclick="tp.presentation_toggle();"></td>
-            </tr>
-        </tbody></table>
-    </div>
-    <!-- Call Div -->
-    <div id="tp_div_call" class="div-options" style="left: 785px; top: 46px; visibility: visible;">
-        <table id="tp_table_2" style="border: 0px solid #000; width: 100%; height: 100%;" >
-            <tbody><tr>
-                <td><!--img alt='logo' src="assets/img/tp-logo.jpg" /--><img alt="logo" src="webrtc-logo.png"><hr></td>
-            </tr>
-            <tr>
-                <td style="white-space: nowrap;" align="center">
-                    <label style="width: 100%;" align="center" id="tp_lbl_status"></label>
-                </td>
-            </tr>
-            <tr>
-            	<td>Bridge identifier (required):</td>
-                <td style="white-space: nowrap;" align="center">
-                    <input type="text" style="width: 100%; height: 100%; font-size:12px" id="tp_txt_bridge_id" value="" title="Bridge identifier (required)" placeholder="10060">
-                </td>
-            </tr>
-            <tr><td>Bridge 4-digits pin code (optional):</td>
-                <td colspan="1" style="white-space: nowrap;" align="center">
-                   <input type="text" style="width: 100%; height: 100%; font-size:12px" id="tp_txt_bridge_pin" value="" title="Bridge 4-digits pin code (optional)" placeholder="1234">
-                </td>
-            </tr>
-            <tr>
-                <td colspan="1" align="center">
-                    <input type="button" class="btn btn-success" style="" id="tp_btn_call" value="join"><hr>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <p><!--© <a href="http://doubango.org/" target="_blank">Doubango Telecom 2013-2015</a></p>
-                    <i>Inspiring the future</i>-->
-                </td>
-            </tr>
-        </tbody></table>  <!-- table_2-->
-    </div>
+			tpj('.fullwidthbanner').revolution(
+				{	
+					delay:9000,												
+					startwidth:1200,
+					startheight:606,
+					
+					onHoverStop:"on",						// Stop Banner Timet at Hover on Slide on/off
+					
+					thumbWidth:100,							// Thumb With and Height and Amount (only if navigation Tyope set to thumb !)
+					thumbHeight:50,
+					thumbAmount:4,
+					
+					hideThumbs:200,
+					navigationType:"both",					//bullet, thumb, none, both	 (No Shadow in Fullwidth Version !)
+					navigationArrows:"verticalcentered",		//nexttobullets, verticalcentered, none
+					navigationStyle:"round",				//round,square,navbar
+					
+					touchenabled:"on",						// Enable Swipe Function : on/off
+					
+					navOffsetHorizontal:0,
+					navOffsetVertical:20,
+					
+					fullWidth:"on",
+					
+					shadow:0								//0 = no Shadow, 1,2,3 = 3 Different Art of Shadows -  (No Shadow in Fullwidth Version !)
+												
+				});	
+	});
+	</script>
 
-
-<audio autoplay></audio></body></html>
+  </body>
+</html>
