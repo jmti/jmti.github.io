@@ -218,6 +218,18 @@
 						white-space:nowrap;
 						
 					}	
+					.caption.very_large_text6	{
+						position: absolute; 
+						color: #000060; 
+						text-shadow: none; 
+						font-size: 60px; 
+						font-family: 'BebasRegular';
+						margin: 0px; 
+						border-width: 0px; 
+						border-style: none; 
+						white-space:nowrap;
+						
+					}	
 					
 					
 .caption.very_big_white	{
@@ -325,6 +337,10 @@
 
 .button.blue, .button:hover.blue,
 .purchase.blue, .purchase:hover.blue			{ border:solid 1px #fff; color:#fff !important;}			
+
+.button.bluedark, .button:hover.bluedark,
+.purchase.bluedark, .purchase:hover.bluedark			{ border:solid 1px #000060; color:#000060 !important;}			
+
 
 
 .button.red, .button:hover.red,
