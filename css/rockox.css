@@ -414,7 +414,7 @@ section{ padding:80px 0;}
 .portfolio-item:nth-child(7) .img-overlay{background:#5ECAE6}
 .portfolio-item:nth-child(8) .img-overlay{background:#BED431}
 .portfolio-item i{border: 3px solid #FFFFFF;border-radius: 6px; color: #FFFFFF; display: block; font-size: 22px;  height: 46px; left: 50%; line-height: 40px; margin-left:-50px; margin-top: -23px;position: absolute;text-align: center; top: -46px; width: 46px; z-index: 8;-moz-transition: all 500ms ease;-webkit-transition: all 500ms ease;-ms-transition: all 500ms ease;-o-transition: all 500ms ease;transition: all 500ms ease;}
-.portfolio-item i.fa-link{ left: auto;margin-right: -50px;right: 50%;}
+.portfolio-item i.fa-link{ left: auto;margin-right: -25px;right: 50%;}
 .portfolio-item:hover i{ top:50%;-moz-transition: all 500ms ease;-webkit-transition: all 500ms ease;-ms-transition: all 500ms ease;-o-transition: all 500ms ease;transition: all 500ms ease;}
 .portfolio-item i:hover{ border-color:#dfdfdf; color:#dfdfdf;}
 
